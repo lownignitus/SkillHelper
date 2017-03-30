@@ -1,0 +1,249 @@
+<!-- Skill Helper v3.2.19 -->
+
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+
+	<Script file="SkillHelper.lua"/>
+
+	<!-- Main Frame -->
+	<Frame name="shFrame" inherits="shTBasicFrame" movable="true" parent="UIParent">
+		<Size x="208" y="36" />
+		<Anchors>
+			<Anchor point="CENTER" relativePoint="CENTER" relativeTo="UIParent" />
+		</Anchors>
+		<Frames>
+			<!-- Top Level Frames -->
+
+			<!-- Title Frame -->
+			<Frame name="$parentTitle" frameStrata="BACKGROUND" movable="false" parentKey="title">
+				<Size x="125" y="18" />
+				<Anchors>
+					<Anchor point="TOPLEFT"  relativePoint="TOPLEFT" relativeTo="$parent" x="10" y="-3" />
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentText" inherits="shTTitleText">
+							<Size>
+								<AbsDimension x="135" y="16" />
+							</Size>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+
+			<!-- Buttons (Profs|Links|Lock|X) -->
+
+			<!-- Close Button -->
+			<Button name="$parentButonClose" inherits="UIPanelCloseButton" parentKey="buttonClose">
+				<Size x="18" y="18" />
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent" x="-2" y="-2" />
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						shToggle();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+						GameTooltip:ClearLines();
+						GameTooltip:SetText("Close");
+						GameTooltip:AddLine("Click to Hide Skill Helper.");
+						GameTooltip:Show();
+
+						shMouseOverEnter();
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+
+						shMouseOverLeave();
+					</OnLeave>
+				</Scripts>
+			</Button>
+
+			<!-- Lock Button -->
+			<CheckButton name="$parentButtonLock" parentKey="buttonLock">
+				<Size x="18" y="18" />
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent" x="-14" y="-3" />
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						shLocker();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+						GameTooltip:ClearLines();
+						GameTooltip:SetText("Lock");
+						GameTooltip:AddLine("Click to lock Skill Helper.");
+						GameTooltip:Show();
+
+						shMouseOverEnter();
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+
+						shMouseOverLeave();
+					</OnLeave>
+				</Scripts>
+				<NormalTexture file="Interface\Buttons\LockButton-Locked-Up"/>
+				<PushedTexture file="Interface\Buttons\LockButton-Unlocked-Down"/>
+				<HighlightTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
+				<CheckedTexture file="Interface\Buttons\LockButton-Unlocked-Up"/>
+			</CheckButton>
+
+			<!-- Links Open Button -->
+			<Button name="$parentButtonLinks" inherits="shTBasicButton" parentKey="buttonLinks">
+				<Size x="18" y="18" />
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent" x="-26" y="-3" />
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						shLinks();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+						GameTooltip:ClearLines();
+						GameTooltip:SetText("Links");
+						GameTooltip:AddLine("Click to toggle the Links frame.");
+						GameTooltip:Show();
+
+						shMouseOverEnter();
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+
+						shMouseOverLeave();
+					</OnLeave>
+				</Scripts>
+				<NormalTexture file="Interface\Buttons\UI-LinkProfession-Up" />
+				<PushedTexture file="Interface\Buttons\UI-LinkProfession-Down" />
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" />
+			</Button>
+
+			<!-- Profs Open Button -->
+			<Button name="$parentButtonProfs" inherits="shTBasicButton" parentKey="buttonProfs">
+				<Size x="18" y="19" />
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent" x="-42" y="1" />
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						ToggleSpellBook("professions");
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+						GameTooltip:ClearLines();
+						GameTooltip:SetText("Professions Pane");
+						GameTooltip:AddLine("Click to Open the Professions Pane.");
+						GameTooltip:Show();
+
+						shMouseOverEnter();
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+
+						shMouseOverLeave();
+					</OnLeave>
+				</Scripts>
+				<NormalTexture file="Interface\Buttons\UI-MicroButton-Spellbook-Up" />
+				<PushedTexture file="Interface\Buttons\UI-MicroButton-Spellbook-Down" />
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" />
+			</Button>
+
+			<!-- Open Options button -->
+			<Button name="$parentButtonOptions" inherits="shTBasicButton" parentKey="buttonOptions">
+				<Size x="12" y="12" />
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent" x="-59" y="-6" />
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						shOption();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+						GameTooltip:ClearLines();
+						GameTooltip:SetText("Skill Helper Options");
+						GameTooltip:AddLine("Click to Open Skill Helper Options Pane.");
+						GameTooltip:Show();
+
+						shMouseOverEnter();
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+
+						shMouseOverLeave();
+					</OnLeave>
+				</Scripts>
+				<NormalTexture file="Interface\ICONS\INV_Eng_GearspringParts" />
+				<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" />
+			</Button>
+
+			<Frame name="shBarFrame" movable="false">
+				<Size x="200" y="26" />
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="shFrame" x="20" y="-3" />
+				</Anchors>
+			</Frame>
+
+		</Frames>
+
+		<Scripts>
+			<OnLoad>
+				self:RegisterForDrag("LeftButton");
+				PetBattleFrame:HookScript("OnShow",function() self:Hide() end)
+				PetBattleFrame:HookScript("OnHide",function() if shSettings.options.shHidden == false then self:Show() end end)
+			</OnLoad>
+			<OnDragStart>
+				self:StartMoving();
+			</OnDragStart>
+			<OnDragStop>
+				self:StopMovingOrSizing();
+			</OnDragStop>
+			<OnEnter>
+				shMouseOverEnter();
+			</OnEnter>
+			<OnLeave>
+				shMouseOverLeave();
+			</OnLeave>
+		</Scripts>
+	</Frame>
+
+	<!-- Skill Links Frame -->
+	<Frame name="shLinksFrame" inherits="shTBasicFrame" movable="false" parent="shFrame">
+		<Size x="52" y="36" />
+		<Anchors>
+			<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="shFrame" x="-5" y="0" />
+		</Anchors>
+		<Frames>
+			<!-- Title Frame -->
+			<Frame name="$parentTitle" frameStrata="BACKGROUND" movable="false" parentKey="title">
+				<Size x="45" y="18" />
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent" x="4" y="-3" />
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentText" inherits="shTTitleText">
+							<Size>
+								<AbsDimension x="45" y="16" />
+							</Size>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+
+		<Scripts>
+			<OnEnter>
+				shMouseOverEnter();
+			</OnEnter>
+			<OnLeave>
+				shMouseOverLeave();
+			</OnLeave>
+		</Scripts>
+	</Frame>
+
+</Ui>
