@@ -1,7 +1,7 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 3.2.19
+-- Version: 3.2.20
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS
@@ -400,6 +400,9 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
 		barBtn1:SetAttribute("type", "spell");
 		barBtn1:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
 		barBtn1:SetAttribute("spell", name);
+		if name == "Mining" then
+			barBtn1:SetAttribute("spell", shGetSpell(name, 2));
+		end
 --		imgFolder .. shGetButton(name, 1)
 		barBtn1BG = { bgFile = imgFolder .. shGetButton(name, 1), edgeFile = nil, tile = false, tileSize = 18, edgeSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}};
 		barBtn1:SetBackdrop(barBtn1BG);

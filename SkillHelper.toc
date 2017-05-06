@@ -2,7 +2,7 @@
 ## Title: |cff00ff00Skill Helper|r
 ## Author: |cffffcc00JerichoHM|r
 ## X-Maintainer: |cffDA70D6LownIgnitus|r Mihkael@US-Alexstrasza
-## Version: |cffFF4500v3.2.19|r
+## Version: |cffFF4500v3.2.20|r
 ## X-Date: 29/03/2017
 ## X-Website: https://www.facebook.com/groups/190240457669378/
 ## Notes: Addon to allow quick viewing of Profession Skill Bars, Access to quick use Skill Buttons, 
