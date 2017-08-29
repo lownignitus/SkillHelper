@@ -1,7 +1,7 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 3.2.20
+-- Version: 3.2.21
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS
