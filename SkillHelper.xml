@@ -7,8 +7,20 @@
 	<Script file="SkillHelper.lua"/>
 
 	<!-- Main Frame -->
-	<Frame name="shFrame" inherits="shTBasicFrame" movable="true" parent="UIParent">
+	<Frame name="shFrame" frameStrata="BACKGROUND" clampedToScreen="true" movable="true" parent="UIParent">
 		<Size x="208" y="36" />
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="3" right="3" top="3" bottom="3" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="16" />
+			</EdgeSize>
+			<!-- Color -->
+		</Backdrop>
 		<Anchors>
 			<Anchor point="CENTER" relativePoint="CENTER" relativeTo="UIParent" />
 		</Anchors>
@@ -23,10 +35,14 @@
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
-						<FontString name="$parentText" inherits="shTTitleText">
+						<FontString name="$parentText" font="Fonts\FRIZQT__.TTF" justifyH="CENTER" justifyV="MIDDLE" parentKey="text">
+							<FontHeight val="14" />
 							<Size>
 								<AbsDimension x="135" y="16" />
 							</Size>
+							<Anchors>
+								<Anchor point="CENTER" relativePoint="CENTER" relativeTo="$parent" />
+							</Anchors>
 						</FontString>
 					</Layer>
 				</Layers>
