@@ -228,8 +228,20 @@
 	</Frame>
 
 	<!-- Skill Links Frame -->
-	<Frame name="shLinksFrame" inherits="shTBasicFrame" movable="false" parent="shFrame">
+	<Frame name="shLinksFrame" frameStrata="BACKGROUND" clampedToScreen="true" movable="false" parent="shFrame">
 		<Size x="52" y="36" />
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="3" right="3" top="3" bottom="3" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="16" />
+			</EdgeSize>
+			<!-- Color -->
+		</Backdrop>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="shFrame" x="-5" y="0" />
 		</Anchors>
@@ -242,10 +254,14 @@
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
-						<FontString name="$parentText" inherits="shTTitleText">
+						<FontString name="$parentText" font="Fonts\FRIZQT__.TTF" justifyH="CENTER" justifyV="MIDDLE" parentKey="text">
+							<FontHeight val="14" />
 							<Size>
 								<AbsDimension x="45" y="16" />
 							</Size>
+							<Anchors>
+								<Anchor point="CENTER" relativePoint="CENTER" relativeTo="$parent" />
+							</Anchors>
 						</FontString>
 					</Layer>
 				</Layers>
