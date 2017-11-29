@@ -9,7 +9,7 @@ local SKILLCAP = 800
 local y = -15
 local imgFolder = "Interface\\ICONS\\"
 local shBarBG = { bgFile = "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar", edgeFile = nil, tile = false, tileSize = 32, edgeSize = 0, insets = {left = 0, right = 0, top = 0, bottom = 0}}
-SLASH_SKILLHELPER1 = '/SHelper' or '/shelper'
+SLASH_SKILLHELPER1, SLASH_SKILLHELPER2, SLASH_SKILLHELPER3, SLASH_SKILLHELPER4 = '/SHelper', '/shelper', '/Skillhelper', '/skillhelper'
 local icon
 CF = CreateFrame
 local addon_name = "SkillHelper"
@@ -39,7 +39,7 @@ function shEvents_table.eventFrame:ADDON_LOADED(AddOn)
 	shEvents_table.eventFrame:UnregisterEvent("ADDON_LOADED")
 	
 	--Title Frames
-	shFrame.title.text:SetText(GetAddOnMetadata("SkillHelper", "Title") .. " " .. GetAddOnMetadata("SkillHelper", "Version"))
+	shFrame.title.text:SetText(GetAddOnMetadata(addon_name, "Title") .. " " .. GetAddOnMetadata(addon_name, "Version"))
 	shLinksFrame.title.text:SetText("Links")
 	
 	-- Defaults
@@ -589,10 +589,6 @@ function shCleanUp()
 end
 
 function shInitialize()
-	if shAutohide == nil then
-		shAutohide = false
-	end
-
 	shFrame:SetScale(shSettings.options.shscale)
 
 	if shSettings.options.shLock == true then
@@ -805,7 +801,7 @@ function shGetSpell(name, spellNum)
 	end
 end
 
-function SlashCmdList.SKILLHELPER(msg)
+function SlashCmdList.SKILLHELPER(msg, Editbox)
 	if msg == "toggle" then
 		shToggle()
 	elseif msg == "lock" then
