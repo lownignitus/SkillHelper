@@ -1,33 +1,140 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 3.2.21
+-- Version: 4.0.0
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS
+local shSkillNames = { 
+				["Archaeology"] = {
+					["ID"] = 794,
+					["Icon"] = "trade_archaeology",
+					["Spells"] = {
+						["Name"] = "Survey",
+						["ID"] = 80451,
+						["Icon"] = "inv_misc_shovel_01",
+					},
+				}, 
+				["Cooking"] = {
+					["ID"] = 185,
+					["Icon"] = "inv_misc_food_15",
+					["Spells"] = {
+						["Name"] = "Cooking Fire",
+						["ID"] = 818,
+						["Icon"] = "spell_fire_fire",
+					},
+				}, 
+				["Fishing"] = {
+					["ID"] = 356,
+					["Icon"] = "trade_fishing",
+					["Spells"] = {
+						["Name"] = "Fishing Skills",
+						["ID"] = 271990,
+						["Icon"] = "achievement_profession_fishing_northrendangler",
+					},
+				},
+				["FirstAid"] = {
+					["ID"] = 129,
+					["Icon"] = "spell_holy_sealofsacrifice",	
+				},
+				["Alchemy"] = {
+					["ID"] = 171,
+					["Icon"] = "trade_alchemy",
+				}, 
+				["Blacksmithing"] = {
+					["ID"] = 164,
+					["Icon"] = "trade_blacksmithing",
+				}, 
+				["Enchanting"] = {
+					["ID"] = 333,
+					["Icon"] = "trade_engraving",
+					["Spells"] = {
+						["Name"] = "Disenchant",
+						["ID"] = 13262,
+						["Icon"] = "inv_enchant_disenchant",
+					},
+				}, 
+				["Engineering"] = {
+					["ID"] = 202,
+					["Icon"] = "trade_engineering",
+				}, 
+				["Herbalism"] = {
+					["ID"] = 182,
+					["Icon"] = "spell_nature_naturetouchgrow",
+					["Spells"] = {
+						["Name"] = "Herbalism Skills",
+						["ID"] = 193290,
+						["Icon"] = "inv_misc_bag_18",
+					},
+				}, 
+				["Inscription"] = {
+					["ID"] = 773,
+					["Icon"] = "inv_inscription_tradeskill01",
+					["Spells"] = {
+						["Name"] = "Milling",
+						["ID"] = 51005,
+						["Icon"] = "ability_miling",
+					},
+				}, 
+				["Jewelcrafting"] = {
+					["ID"] = 755,
+					["Icon"] = "inv_misc_gem_01",
+					["Spells"] = {
+						["Name"] = "Prospecting",
+						["ID"] = 31252,
+						["Icon"] = "inv_misc_gem_bloodgem_01",
+					},
+				}, 
+				["Leatherworking"] = {
+					["ID"] = 165,
+					["Icon"] = "inv_misc_armorkit_17",
+				}, 
+				["Mining"] = {
+					["ID"] = 186,
+					["Icon"] = "trade_mining",
+					["Spells"] = {
+						["Name"] = "Mining Skills",
+						["ID"] = 2656,
+						["Icon"] = "spell_fire_flameblades",
+					},
+				}, 
+				["Skinning"] = {
+					["ID"] = 393,
+					["Icon"] = "inv_misc_pelt_wolf_01",
+					["Spells"] = {
+						["Name"] = "Skinning Skills",
+						["ID"] = 194174,
+						["Icon"] = "inv_misc_skinningknife",
+					},
+				}, 
+				["Tailoring"] = {
+					["ID"] = 197,
+					["Icon"] = "trade_tailoring",
+				}
+			}
+
 local SKILLCAP = 800
-local y = -15
+local y = -19
 local imgFolder = "Interface\\ICONS\\"
+local shFrameBG = { bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background.blp", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border.blp", tile = true, tileSize = 32, edgeSize = 16, insets = {left = 3, right = 3, top = 3, bottom = 3}}
 local shBarBG = { bgFile = "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar", edgeFile = nil, tile = false, tileSize = 32, edgeSize = 0, insets = {left = 0, right = 0, top = 0, bottom = 0}}
 SLASH_SKILLHELPER1, SLASH_SKILLHELPER2, SLASH_SKILLHELPER3, SLASH_SKILLHELPER4 = '/SHelper', '/shelper', '/Skillhelper', '/skillhelper'
 local icon
 CF = CreateFrame
 local addon_name = "SkillHelper"
+local shFrame
+local shBarFrame
+local shLinksFrame
 
 -- RegisterForEvent table
 local shEvents_table = {}
 
 shEvents_table.eventFrame = CF("Frame");
---shEvents_table.eventFrame:RegisterEvent("PLAYER_LOGIN");
 shEvents_table.eventFrame:RegisterEvent("ADDON_LOADED");
 shEvents_table.eventFrame:RegisterEvent("SKILL_LINES_CHANGED");
 shEvents_table.eventFrame:SetScript("OnEvent", function(self, event, ...)
 	shEvents_table.eventFrame[event](self, ...);
 end);
-
-function shEvents_table.eventFrame:PLAYER_LOGIN()
-		-- 
-end
 
 function shEvents_table.eventFrame:ADDON_LOADED(AddOn)
 --	print(AddOn)
@@ -37,10 +144,6 @@ function shEvents_table.eventFrame:ADDON_LOADED(AddOn)
 
 	-- Unregister ADDON_LOADED, reduce cpu lag
 	shEvents_table.eventFrame:UnregisterEvent("ADDON_LOADED")
-	
-	--Title Frames
-	shFrame.title.text:SetText(GetAddOnMetadata(addon_name, "Title") .. " " .. GetAddOnMetadata(addon_name, "Version"))
-	shLinksFrame.title.text:SetText("Links")
 	
 	-- Defaults
 	local defaults = {
@@ -72,6 +175,7 @@ function shEvents_table.eventFrame:ADDON_LOADED(AddOn)
 			["shAid"] = true,
 			["shRev"] = false,
 			["shDB"] = { hide = false },
+			["shNewLayout"] = true,
 		}
 	}
 	
@@ -90,18 +194,186 @@ function shEvents_table.eventFrame:ADDON_LOADED(AddOn)
 
 	shSettings = shSVCheck(defaults, shSettings)
 
---	shSettings = shSettings or {}
-
---	for var, value in pairs(defaults) do
---		if shSettings[var] == nil then
---			shSettings[var] = value
---		end
---	end
+-- Initialize Main Frame
+	shMainFrame()
 
 --	print("Unregister")
 	shMiniMap();
 	shOptionsInit();
 	shInitialize();
+end
+
+function shMainFrame()
+	-- shFrame Core UI
+	shFrame = CF("Frame", "shFrame", UIParent)
+	shFrame:SetPoint("CENTER", UIParent, "CENTER")
+	shFrame:SetFrameStrata("BACKGROUND")
+	shFrame:SetBackdrop(shFrameBG)
+	if shSettings.options.shNewLayout == true then
+		shFrame:SetSize(208, 36)
+	else
+		shFrame:SetSize(170, 28)
+	end
+
+	--Mouse Enabling, Movement constraints, and Movment functions
+	shFrame:SetMovable(true)
+	shFrame:SetClampedToScreen(true)
+	shFrame:EnableMouse(true)
+	shFrame:RegisterForDrag("LeftButton")
+	shFrame:SetScript("OnDragStart", shFrame.StartMoving)
+	shFrame:SetScript("OnDragStop", shFrame.StopMovingOrSizing)
+
+	-- Mouse Over Functionality
+	shFrame:SetScript("OnEnter", function(self) shMouseOverEnter(); end)
+	shFrame:SetScript("OnLeave", function(self) shMouseOverLeave(); end)
+
+	-- shFrame Hide on Pet Battle
+	shFrame:SetScript("OnShow", function(self)
+  		PetBattleFrame:HookScript("OnShow",function() self:Hide(); end);
+  		PetBattleFrame:HookScript("OnHide",function() if shSettings.options.shHidden == false then self:Show(); end end);
+  	end);
+
+	-- shFrame New layout UI
+	if shSettings.options.shNewLayout == true then
+		-- Title
+		shFrame.title = shFrame:CreateFontString("shFrameTitle", "BACKGROUND")
+		shFrame.title:SetFont("Fonts\\FRIZQT__.TTF", 12)
+		shFrame.title:SetSize(125, 16)
+		shFrame.title:SetPoint("TOPLEFT", shFrame, "TOPLEFT", 10, -3)		
+		shFrameTitle:SetText(GetAddOnMetadata(addon_name, "Title") .. " " .. GetAddOnMetadata(addon_name, "Version"))
+
+		-- Buttons (Options|Profs|Links|Lock|Close)
+		-- Close Button
+		local shFrameCloseButton = CF("Button", "shFrameCloseBtn", shFrame, "UIPanelCloseButton")
+		shFrameCloseButton:SetFrameStrata("LOW")
+		shFrameCloseButton:SetSize(18, 18)
+		shFrameCloseButton:SetPoint("TOPRIGHT", shFrame, "TOPRIGHT", -2, -2)
+
+		shFrameCloseButton:SetScript("OnClick", function(self) shToggle(); end)
+		shFrameCloseButton:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT"); 
+												GameTooltip:ClearLines(); 
+												GameTooltip:AddLine("Close");
+												GameTooltip:AddLine("Click to Hide Skill Helper.");
+												GameTooltip:Show();
+												shMouseOverEnter(); end)
+		shFrameCloseButton:SetScript("OnLeave", function(self) GameTooltip:Hide();
+												shMouseOverLeave(); end)
+
+		-- Lock Button
+		local shFrameLockButton = CF("CheckButton", "shFrameLockButton", shFrame)
+		shFrameLockButton:SetFrameStrata("LOW")
+		shFrameLockButton:SetSize(18, 18)
+		shFrameLockButton:SetPoint("TOPRIGHT", shFrame, "TOPRIGHT", -14, -3)
+
+		shFrameLockButton:SetScript("OnClick", function(self) shLocker(); end)
+		shFrameLockButton:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+												GameTooltip:ClearLines();
+												GameTooltip:AddLine("Lock");
+												GameTooltip:AddLine("Click to lock Skill Helper.");
+												GameTooltip:Show();
+												shMouseOverEnter(); end)
+		shFrameLockButton:SetScript("OnLeave", function(self) GameTooltip:Hide();
+												shMouseOverLeave(); end)
+
+		shFrameLockButton:SetNormalTexture("Interface\\Buttons\\LockButton-Locked-Up")
+		shFrameLockButton:SetPushedTexture("Interface\\Buttons\\LockButton-Unlocked-Down")
+		shFrameLockButton:SetHighlightTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Highlight")
+		shFrameLockButton:SetCheckedTexture("Interface\\Buttons\\LockButton-Unlocked-Up")
+
+		-- Links Open Button
+		local shFrameLinksButton = CF("Button", "shFrameLinksButton", shFrame)
+		shFrameLinksButton:SetFrameStrata("LOW")
+		shFrameLinksButton:SetSize(18, 18)
+		shFrameLinksButton:SetPoint("TOPRIGHT", shFrame, "TOPRIGHT", -26, -3)
+
+		shFrameLinksButton:SetScript("OnClick", function(self) shLinks(); end)
+		shFrameLinksButton:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+												GameTooltip:ClearLines();
+												GameTooltip:AddLine("Links");
+												GameTooltip:AddLine("Click to toggle the Links frame.");
+												GameTooltip:Show();
+												shMouseOverEnter(); end)
+		shFrameLinksButton:SetScript("OnLeave", function(self) GameTooltip:Hide();
+												shMouseOverLeave(); end)
+
+		shFrameLinksButton:SetNormalTexture("Interface\\Buttons\\UI-LinkProfession-Up")
+		shFrameLinksButton:SetPushedTexture("Interface\\Buttons\\UI-LinkProfession-Down")
+		shFrameLinksButton:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
+
+		-- Prof Open Button
+		local shFrameProfsButton = CF("Button", "shFrameProfsButton", shFrame)
+		shFrameProfsButton:SetFrameStrata("LOW")
+		shFrameProfsButton:SetSize(18, 19)
+		shFrameProfsButton:SetPoint("TOPRIGHT", shFrame, "TOPRIGHT", -42, 1)
+
+		shFrameProfsButton:SetScript("OnClick", function(self) ToggleSpellBook("professions"); end)
+		shFrameProfsButton:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+												GameTooltip:ClearLines();
+												GameTooltip:AddLine("Professions Pane");
+												GameTooltip:AddLine("Click to Open the Professions Pane.");
+												GameTooltip:Show();
+												shMouseOverEnter(); end)
+		shFrameProfsButton:SetScript("OnLeave", function(self) GameTooltip:Hide();
+												shMouseOverLeave(); end)
+
+		shFrameProfsButton:SetNormalTexture("Interface\\Buttons\\UI-MicroButton-Spellbook-Up")
+		shFrameProfsButton:SetPushedTexture("Interface\\Buttons\\UI-MicroButton-Spellbook-Down")
+		shFrameProfsButton:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
+
+		-- Options Open Button
+		local shFrameOptionsButton = CF("Button", "shFrameOptionsButton", shFrame)
+		shFrameOptionsButton:SetFrameStrata("LOW")
+		shFrameOptionsButton:SetSize(12, 12)
+		shFrameOptionsButton:SetPoint("TOPRIGHT", shFrame, "TOPRIGHT", -59, -6)
+
+		shFrameOptionsButton:SetScript("OnClick", function(self) shOption(); end)
+		shFrameOptionsButton:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+													GameTooltip:ClearLines();
+													GameTooltip:AddLine("Skill Helper Options");
+													GameTooltip:AddLine("Click to Open Skill Helper Options Pane.");
+													GameTooltip:Show();
+													shMouseOverEnter(); end)
+		shFrameOptionsButton:SetScript("OnLeave", function(self) GameTooltip:Hide();
+													shMouseOverLeave(); end)
+
+		shFrameOptionsButton:SetNormalTexture("Interface\\ICONS\\INV_Eng_GearspringParts")
+		shFrameOptionsButton:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
+
+		shLinkFrame()
+	end
+
+	-- shBarFrame
+	shBarFrame = CF("Frame", "shBarFrame", shFrame)
+	shBarFrame:SetSize(200, 26)
+	if shSettings.options.shNewLayout == true then
+		shBarFrame:SetPoint("TOPLEFT", shFrame, "TOPLEFT", 20, -3)
+	else
+		shBarFrame:SetPoint("TOPLEFT", shFrame, "TOPLEFT", 3, -3)
+	end
+	
+	-- Display Main frame
+	shFrame:Show()
+end
+
+function shLinkFrame()
+	-- shLinkFrame Core UI
+	shLinksFrame = CF("Frame", "shLinkFrame", shFrame)
+	shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -5, 0)
+	shLinksFrame:SetFrameStrata("BACKGROUND")
+	shLinksFrame:SetBackdrop(shFrameBG)
+	shLinksFrame:SetSize(52, 36)
+	shLinksFrame:SetClampedToScreen(true)
+
+	-- shLinksFrame title bar
+	shLinksFrame.title = shLinksFrame:CreateFontString("shLinkFrameTitle", "BACKGROUND")
+	shLinksFrame.title:SetFont("Fonts\\FRIZQT__.TTF", 14)
+	shLinksFrame.title:SetSize(45, 16)
+	shLinksFrame.title:SetPoint("TOPLEFT", shLinksFrame, "TOPLEFT", 4, -3)
+	shLinksFrame.title:SetText("Links")
+
+	-- Mouse Over Functionality
+	shLinksFrame:SetScript("OnEnter", function(self) shMouseOverEnter(); end)
+	shLinksFrame:SetScript("OnLeave", function(self) shMouseOverLeave(); end)
 end
 
 function shEvents_table.eventFrame:SKILL_LINES_CHANGED()
@@ -149,6 +421,7 @@ function shOptionsInit()
 		checkbox.text:SetText(" " .. text)
 		return checkbox
 	end
+	
 	--GameFontNormalHuge GameFontNormalLarge 
 	local title = createfont("SystemFont_OutlineThick_WTF", GetAddOnMetadata(addon_name, "Title"))
 	title:SetPoint("TOPLEFT", 16, -16)
@@ -162,8 +435,10 @@ function shOptionsInit()
 	maintainer:SetPoint("TOPLEFT", author, "BOTTOMLEFT", 0, -8)
 	local website = createfont("GameFontNormal", "Website: " .. GetAddOnMetadata(addon_name, "X-Website"))
 	website:SetPoint("TOPLEFT", maintainer, "BOTTOMLEFT", 0, -8)
+	local contact = createfont("GameFontNormal", "Contact: " .. GetAddOnMetadata(addon_name, "X-Contact"))
+	contact:SetPoint("TOPLEFT", website, "BOTTOMLEFT", 0, -8)
 	local desc = createfont("GameFontHighlight", GetAddOnMetadata(addon_name, "Notes"))
-	desc:SetPoint("TOPLEFT", website, "BOTTOMLEFT", 0, -8)
+	desc:SetPoint("TOPLEFT", contact, "BOTTOMLEFT", 0, -8)
 	local desc2 = createfont("GameFontHighlight", GetAddOnMetadata(addon_name, "X-Notes2"))
 	desc2:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -8)
 
@@ -171,7 +446,7 @@ function shOptionsInit()
 	local shMiscFrame = CF("Frame", SHMiscFrame, shOptions)
 	shMiscFrame:SetPoint("TOPLEFT", desc2, "BOTTOMLEFT", 0, -8)
 	shMiscFrame:SetBackdrop(shOptionsBG)
-	shMiscFrame:SetSize(240, 215)
+	shMiscFrame:SetSize(240, 240)
 
 	local miscTitle = createfont("GameFontNormal", nil, nil, nil, "TOP", shMiscFrame, "TOP", 150, 16, 0, -8, "Miscellaneous Options")
 
@@ -226,8 +501,16 @@ function shOptionsInit()
 
 	shAidOpt:SetScript("OnClick", function(self) shAidToggle() end)
 
+	-- Old addon style
+	local shLayoutOpt = createcheckbox("Use new GUI Layout for Skill Helper.", 18, 18, "TOPLEFT", shAidOpt, "BOTTOMLEFT", 0, 0, "shLayoutOpt")
+	shLayoutOpt:SetScript("OnClick", function() shLayoutToggle() end)
+
+	-- Layout addition Description
+	local layDesc = createfont("GameFontNormal", "Requires a /reload.")
+	layDesc:SetPoint("TOPLEFT", shLayoutOpt, "BOTTOMLEFT", 35, 0)
+
 	-- Reverse the skill bars, buttons, and link frame
-	local shRevOpt = createcheckbox("Reverse the Skill Helper frame.", 18, 18, "TOPLEFT", shAidOpt, "BOTTOMLEFT", 0, 0, "shRevOpt")
+	local shRevOpt = createcheckbox("Reverse the Skill Helper frame.", 18, 18, "TOPLEFT", layDesc, "BOTTOMLEFT", -35, 0, "shRevOpt")
 	--shRevOpt:Disable()
 
 	shRevOpt:SetScript("OnClick", function() shRevToggle() end)
@@ -363,12 +646,25 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
 		-- Skill Button 2 X Point
 		btnbx = 0
 	else
-		-- Skill Bar X Point
-		barx = 42
-		-- Skill Button 1 X Point
-		btnax = -178
-		-- Skill Button 2 X Point
-		btnbx = -36
+		if shSettings.options.shNewLayout == true then
+			-- Skill Bar X Point
+			barx = 42
+			-- Skill Button 1 X Point
+			btnax = -178
+			-- Skill Button 2 X Point
+			btnbx = -36
+		else
+			-- Skill Bar X Point
+			barx = 6
+			-- Skill Button 1 X Point
+			btnax = -178
+			-- Skill Button 2 X Point
+			btnbx = -36
+		end
+	end
+
+	if shSettings.options.shNewLayout == false then
+		y = y + 17
 	end
 
 	local bar = bars[name]
@@ -376,7 +672,7 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
 		-- The Skill bar
 		bar = CF("StatusBar", nil, shBarFrame)
 		bar:SetFrameStrata("BACKGROUND")
-		bar:SetPoint("TOPLEFT", shBarFrame, "TOPLEFT", barx, y-4)
+		bar:SetPoint("TOPLEFT", shBarFrame, "TOPLEFT", barx, y)
 		bar:SetSize(160,18)
 		bar:SetBackdrop(shBarBG)
 		bar:SetBackdropColor(shSettings.colors.baser, shSettings.colors.baseg, shSettings.colors.baseb, shSettings.colors.half)
@@ -413,7 +709,9 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
 		-- The second button on the skills action bar if applicable
 		if numSpells == 2 then
 --			print("Button 2" .. name)
-			if name ~= "Tailoring" and name ~= "Alchemy" and name ~= "Engineering" and name ~= "Blacksmithing" and name ~= "Leatherworking" and name ~= "Mining" then
+			if name == "Alchemy" or name == "Blacksmithing" or name == "Engineering" or name == "Leatherworking" or name == "Mining" or name == "Tailoring" then
+				print("Spell 2 founf for " .. name .. ".")
+			else
 				local barBtn2 = CF("Button", nil, barBtn1, "SecureActionButtonTemplate");
 				barBtn2:SetFrameStrata("BACKGROUND");
 				barBtn2:SetPoint("TOPLEFT", barBtn1, "TOPRIGHT", btnbx, 0);
@@ -468,41 +766,43 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
 end
 
 function shLinksButtons(name, y)
-	linkBtn = CF("Button", nil, shLinksFrame, nil)
-	linkBtn:SetFrameStrata("BACKGROUND")
-	linkBtn:SetPoint("TOPRIGHT", shLinksFrame, "TOPRIGHT", -5, y-4)
-	linkBtn:SetSize(40, 18)
-	linkBtn:EnableMouse(true)
-	linkBtnBG = { edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", tile = true, tileSize = 32, edgeSize = 16, insets = {left = 3, right = 3, top = 3, bottom = 3}};
-	linkBtn:SetBackdrop(linkBtnBG);
-	linkBtn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
-	linkBtn:SetScript("OnClick", function(self)
-		local link = select(2, GetSpellLink(name))
---		print(link)
-		if link == nil then ChatFrame1:AddMessage("Could not get link for profession.") return end
+	if shSettings.options.shNewLayout == true then
+		linkBtn = CF("Button", nil, shLinksFrame, nil)
+		linkBtn:SetFrameStrata("BACKGROUND")
+		linkBtn:SetPoint("TOPRIGHT", shLinksFrame, "TOPRIGHT", -5, y-4)
+		linkBtn:SetSize(40, 18)
+		linkBtn:EnableMouse(true)
+		linkBtnBG = { edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", tile = true, tileSize = 32, edgeSize = 16, insets = {left = 3, right = 3, top = 3, bottom = 3}};
+		linkBtn:SetBackdrop(linkBtnBG);
+		linkBtn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
+		linkBtn:SetScript("OnClick", function(self)
+			local link = select(2, GetSpellLink(name))
+	--		print(link)
+			if link == nil then ChatFrame1:AddMessage("Could not get link for profession.") return end
 
-		local activeEditBox = ChatEdit_GetActiveWindow()
-		if MacroFrameText and MacroFrameText:IsShown() and MacroFrameText:HasFocus() then
-			local text = MacroFrameText:GetText() .. link
-			if strlenutf8(text) <= 255 then
-				MacroFrameText:Insert(link)
+			local activeEditBox = ChatEdit_GetActiveWindow()
+			if MacroFrameText and MacroFrameText:IsShown() and MacroFrameText:HasFocus() then
+				local text = MacroFrameText:GetText() .. link
+				if strlenutf8(text) <= 255 then
+					MacroFrameText:Insert(link)
+				end
+			elseif activeEditBox then
+				ChatEdit_InsertLink(link)
 			end
-		elseif activeEditBox then
-			ChatEdit_InsertLink(link)
-		end
-	end)
-	
-	local linkTxt = linkBtn:CreateFontString(nil, "ARTWORK");
-	isValid = linkTxt:SetFont("Fonts\\FRIZQT__.TTF", 14);
-	linkTxt:SetPoint("CENTER", linkBtn, "CENTER", 0, 0);
-	linkBtn.text = linkTxt
+		end)
+		
+		local linkTxt = linkBtn:CreateFontString(nil, "ARTWORK");
+		isValid = linkTxt:SetFont("Fonts\\FRIZQT__.TTF", 14);
+		linkTxt:SetPoint("CENTER", linkBtn, "CENTER", 0, 0);
+		linkBtn.text = linkTxt
 
-	linkBtn:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines(); GameTooltip:AddLine(name .. " Link"); GameTooltip:Show(); shMouseOverEnter(); end)
-	linkBtn:SetScript("OnLeave", function(self) GameTooltip:Hide(); shMouseOverLeave(); end)
+		linkBtn:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines(); GameTooltip:AddLine(name .. " Link"); GameTooltip:Show(); shMouseOverEnter(); end)
+		linkBtn:SetScript("OnLeave", function(self) GameTooltip:Hide(); shMouseOverLeave(); end)
 
-	linkBtn.text:SetText("|cFFFFFF00Link|r")
-	
-	shLinksFrame:SetHeight((y - 27)* -1)
+		linkBtn.text:SetText("|cFFFFFF00Link|r")
+		
+		shLinksFrame:SetHeight((y - 23)* -1)
+	end
 end
 
 function shUpdateData()
@@ -555,7 +855,7 @@ function shUpdateData()
 	end
 	shCleanUp()
 
-	y = -15
+	y = -19
 end
 
 function shCleanUp()
@@ -593,10 +893,14 @@ function shInitialize()
 
 	if shSettings.options.shLock == true then
 		shFrame:EnableMouse(true)
-		shFrame.buttonLock:SetChecked(true)
+		if shSettings.options.shNewLayout == true then
+			shFrameLockButton:SetChecked(true)
+		end
 	else
 		shFrame:EnableMouse(false)
-		shFrame.buttonLock:SetChecked(false)
+		if shSettings.options.shNewLayout == true then
+			shFrameLockButton:SetChecked(false)
+		end
 	end
 			
 	if shSettings.options.shHidden == false then
@@ -605,9 +909,9 @@ function shInitialize()
 		shFrame:Hide()
 	end			
 
-	if shSettings.options.shlHidden == false then
+	if shSettings.options.shlHidden == false and shSettings.options.shNewLayout == true then
 		shLinksFrame:Show()
-	else
+	elseif shSettings.options.shlHidden == true and shSettings.options.shNewLayout == true then
 		shLinksFrame:Hide()
 	end
 
@@ -664,10 +968,20 @@ function shInitialize()
 
 	if shSettings.options.shRev == false then
 		shRevOpt:SetChecked(false)
-		shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -5, 0)
+		if shSettings.options.shNewLayout == true then
+			shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -5, 0)
+		end
 	else
 		shRevOpt:SetChecked(true)
-		shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -255, 0)
+		if shSettings.options.shNewLayout == true then
+			shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -255, 0)
+		end
+	end
+
+	if shSettings.options.shNewLayout == true then
+		shLayoutOpt:SetChecked(true)
+	else
+		shLayoutOpt:SetChecked(false)
 	end
 end
 
@@ -688,79 +1002,81 @@ function shGetButton(name, spellNum)
 --	print(sName .. ", " .. rank .. ", " .. icon .. ", " .. castTime .. ", " .. minRange .. ", " .. maxRange)
 	if name == "Alchemy" then
 		if spellNum == 1 then
-			return "trade_alchemy"
+			return shSkillNames.Alchemy.Icon
 		end
 	elseif name == "Archaeology" then
 		if spellNum == 1 then
-			return "trade_archaeology"
+			return shSkillNames.Archaeology.Icon
 		elseif spellNum == 2 then
-			return "inv_misc_shovel_01"
+			return shSkillNames.Archaeology.Spells.Icon
 		end
 	elseif name == "Blacksmithing" then
 		if spellNum == 1 then
-			return "trade_blacksmithing"
+			return shSkillNames.Blacksmithing.Icon
 		end
 	elseif name == "Cooking" then
 		if spellNum == 1 then
-			return "inv_misc_food_15"
+			return shSkillNames.Cooking.Icon
 		elseif spellNum == 2 then
-			return "spell_fire_fire"
+			return shSkillNames.Cooking.Spells.Icon
 		end
 	elseif name == "Enchanting" then
 		if spellNum == 1 then
-			return "trade_engraving"
+			return shSkillNames.Enchanting.Icon
 		elseif spellNum == 2 then
-			return "INV_Enchant_Disenchant"
+			return shSkillNames.Enchanting.Spells.Icon
 		end
 	elseif name == "Engineering" then
 		if spellNum == 1 then
-			return "trade_engineering"
+			return shSkillNames.Engineering.Icon
 		end
 	elseif name == "First Aid" then
 		if spellNum == 1 then
-			return "spell_holy_sealofsacrifice"
+			return shSkillNames.FirstAid.Icon
 		end
 	elseif name == "Fishing" then
 		if spellNum == 1 then
-			return "trade_fishing"
+			return shSkillNames.Fishing.Icon
+		elseif spellNum == 2 then
+			return shSkillNames.Fishing.Spells.Icon
 		end
 	elseif name == "Herbalism" then
 		if spellNum == 1 then
-			return "spell_nature_naturetouchgrow"
+			return shSkillNames.Herbalism.Icon
 		elseif spellNum == 2 then
-			return "inv_misc_bag_18"
+			return shSkillNames.Herbalism.Spells.Icon
 		end
 	elseif name == "Inscription" then
 		if spellNum == 1 then
-			return "inv_inscription_tradeskill01"
+			return shSkillNames.Inscription.Icon
 		elseif spellNum == 2 then
-			return "ability_miling"
+			return shSkillNames.Inscription.Spells.Icon
 		end
 	elseif name == "Jewelcrafting" then
 		if spellNum == 1 then
-			return "inv_misc_gem_01"
+			return shSkillNames.Jewelcrafting.Icon
 		elseif spellNum == 2 then
-			return "inv_misc_gem_bloodgem_01"
+			return shSkillNames.Jewelcrafting.Spells.Icon
 		end
 	elseif name == "Leatherworking" then
 		if spellNum == 1 then
-			return "inv_misc_armorkit_17"
+			return shSkillNames.Leatherworking.Icon
 		end
 	elseif name == "Mining" then
 		if spellNum == 1 then
-			return "spell_fire_flameblades"
+			return shSkillNames.Mining.Icon
 		elseif spellNum == 2 then
-			return "trade_mining"
+			return shSkillNames.Mining.Spells.Icon
 		end
 	elseif name == "Skinning" then
 		if spellNum == 1 then
-			return "inv_misc_pelt_wolf_01"
+			return shSkillNames.Skinning.Icon
 		elseif spellNum == 2 then
-			return "inv_misc_skinningknife"
+			return shSkillNames.Skinning.Spells.Icon
 		end
 	elseif name == "Tailoring" then
 		if spellNum == 1 then
-			return "trade_tailoring"
+			return shSkillNames.Tailoring.Icon
 		end
 	end
 end
@@ -768,35 +1084,39 @@ end
 function shGetSpell(name, spellNum)
 	if name == "Archaeology" then
 		if spellNum == 2 then
-			return "Survey"
+			return shSkillNames.Archaeology.Spells.Name
 		end
 	elseif name == "Cooking" then
 		if spellNum == 2 then
-			return "Cooking Fire"
+			return shSkillNames.Cooking.Spells.Name
 		end
 	elseif name == "Enchanting" then
 		if spellNum == 2 then
-			return "Disenchant"
+			return shSkillNames.Enchanting.Spells.Name
+		end
+	elseif name == "Fishing" then
+		if spellNum == 2 then
+			return shSkillNames.Fishing.Spells.Name
 		end
 	elseif name == "Herbalism" then
 		if spellNum == 2 then
-			return "Herbalism Skills"
+			return shSkillNames.Herbalism.Spells.Name
 		end
 	elseif name == "Inscription" then
 		if spellNum == 2 then
-			return "Milling"
+			return shSkillNames.Inscription.Spells.Name
 		end
 	elseif name == "Jewelcrafting" then
 		if spellNum == 2 then
-			return "Prospecting"
+			return shSkillNames.Jewelcrafting.Spells.Name
 		end
 	elseif name == "Mining" then
 		if spellNum == 2 then
-			return "Mining Skills"
+			return shSkillNames.Mining.Spells.Name
 		end
 	elseif name == "Skinning" then
 		if spellNum == 2 then
-			return "Skinning Skills"
+			return shSkillNames.Skinning.Spells.Name
 		end
 	end
 end
@@ -808,21 +1128,23 @@ function SlashCmdList.SKILLHELPER(msg, Editbox)
 		shLocker()
 	elseif msg == "links" then
 		shLinks()
-	elseif msg == "reset" then
-		shReset()
+	elseif msg == "layout" then
+		shLayoutToggle()
 	elseif msg == "mmtoggle" then
 		shMMToggle()
 	elseif msg == "options" then
 		shOption()
 	elseif msg == "info" then
 		shInfo()
+	elseif msg == "test" then
+		print(shSkillNames.Archaeology.Spells.Icon)
 	else
 		ChatFrame1:AddMessage("|cff71C671Skill Helper Slash Commands|r")
 		ChatFrame1:AddMessage("|cff71C671type /SHelper followed by:|r")
 		ChatFrame1:AddMessage("|cff71C671  -- toggle to toggle the addon hidden state|r")
 		ChatFrame1:AddMessage("|cff71C671  -- lock to toggle locking|r")
 		ChatFrame1:AddMessage("|cff71C671  -- links to toggle the Skill Links frame|r")
-		ChatFrame1:AddMessage("|cff71C671  -- reset to reset to default position|r")
+		ChatFrame1:AddMessage("|cff71C671  -- layout to switch between old and new layouts|r")
 		ChatFrame1:AddMessage("|cff71C671  -- mmtoggle to toggle the minimap button on/off|r")
 		ChatFrame1:AddMessage("|cff71C671  -- options to open addon options|r")
 		ChatFrame1:AddMessage("|cff71C671  -- info to view current build information|r")
@@ -948,14 +1270,28 @@ end
 function shRevToggle()
 	if shSettings.options.shRev == true then
 		shSettings.options.shRev = false
-		shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -5, 0)
+		if shSettings.options.shNewLayout == true then
+			shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -5, 0)
+		end
 		ChatFrame1:AddMessage("Skill Helper set to normal")
 		shUpdateData();
 	else
-		shSettings.options.shRev = true
-		shLinksFrame:SetPoint("TOPRIGHT", shFrame, "TOPLEFT", -255, 0)
+		shSettings.options.shRev = true		
+		if shSettings.options.shNewLayout == true then
+			shLinksFrame:SetPoint("TOPRIGHT", shFrame, "TOPLEFT", -255, 0)
+		end
 		ChatFrame1:AddMessage("Skill Helper reversed")
 		shUpdateData();
+	end
+end
+
+function shLayoutToggle()
+	if shSettings.options.shNewLayout == true then
+		shSettings.options.shNewLayout = false
+		ChatFrame1:AddMessage("Skill Helper set to Old Layout. Your UI needs a Reload.")
+	else
+		shSettings.options.shNewLayout = true
+		ChatFrame1:AddMessage("Skill Helper set to New Layout. Your UI needs a Reload.")
 	end
 end
 
@@ -1018,10 +1354,10 @@ function shMiniMap()
 					shLocker()
 				end
 			elseif button == "MiddleButton" then
-				shReset()
+				shOption()
 			elseif button == "LeftButton" then
 				if IsShiftKeyDown() then
-					shOption()
+					shLayoutToggle()
 				else
 					shToggle()
 				end
@@ -1033,10 +1369,10 @@ function shMiniMap()
 			tt:AddLine("Author: " .. GetAddOnMetadata("SkillHelper", "Author"))
 			tt:AddLine("Maintainer: " .. GetAddOnMetadata("SkillHelper", "X-Maintainer"))
 			tt:AddLine("|r  Left-Click to toggle window")
-			tt:AddLine("|r  Shift+Left-Click to open Options")
+			tt:AddLine("|r  Shift+Left-Click to change Layout")
 			tt:AddLine("|r  Right-Click to toggle lock")
 			tt:AddLine("|r  Shift+Right-Click to toggle the Links frame")
-			tt:AddLine("|r  Middle-Click to reset")
+			tt:AddLine("|r  Middle-Click to open Options")
 		end,
 	})
 	if shLDB then
