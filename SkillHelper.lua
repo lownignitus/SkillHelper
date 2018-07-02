@@ -696,10 +696,6 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
 		barBtn1:SetAttribute("type", "spell");
 		barBtn1:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
 		barBtn1:SetAttribute("spell", name);
-		if name == "Mining" then
-			barBtn1:SetAttribute("spell", shGetSpell(name, 2));
-		end
---		imgFolder .. shGetButton(name, 1)
 		barBtn1BG = { bgFile = imgFolder .. shGetButton(name, 1), edgeFile = nil, tile = false, tileSize = 18, edgeSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}};
 		barBtn1:SetBackdrop(barBtn1BG);
 		barBtn1:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines(); GameTooltip:AddLine(name); GameTooltip:Show(); shMouseOverEnter(); end)
@@ -707,9 +703,9 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
 		bar.btn1 = barBtn1
 
 		-- The second button on the skills action bar if applicable
-		if numSpells == 2 then
+		if numSpells == 2 or name == "Mining" then
 --			print("Button 2" .. name)
-			if name == "Alchemy" or name == "Blacksmithing" or name == "Engineering" or name == "Leatherworking" or name == "Mining" or name == "Tailoring" then
+			if name == "Alchemy" or name == "Blacksmithing" or name == "Engineering" or name == "Leatherworking" or name == "Tailoring" then
 				print("Spell 2 founf for " .. name .. ".")
 			else
 				local barBtn2 = CF("Button", nil, barBtn1, "SecureActionButtonTemplate");
