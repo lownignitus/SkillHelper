@@ -113,7 +113,11 @@ local shSkillNames = {
 				}
 			}
 
-local SKILLCAP = 800
+local SKILLCAP = 300
+local classicCap = 30
+local bcNRCataMopCap = 75
+local wodLegionCap = 100
+local bfaStart = 150
 local y = -19
 local imgFolder = "Interface\\ICONS\\"
 local shFrameBG = { bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background.blp", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border.blp", tile = true, tileSize = 32, edgeSize = 16, insets = {left = 3, right = 3, top = 3, bottom = 3}}
@@ -496,13 +500,8 @@ function shOptionsInit()
 
 	shCookOpt:SetScript("OnClick", function(self) shCookToggle() end)
 
-	-- Toggle First Aid Profession bar
-	local shAidOpt = createcheckbox("Hide First Aid Profession bar.", 18, 18, "TOPLEFT", shCookOpt, "BOTTOMLEFT", 0, 0, "shAidOpt")
-
-	shAidOpt:SetScript("OnClick", function(self) shAidToggle() end)
-
 	-- Old addon style
-	local shLayoutOpt = createcheckbox("Use new GUI Layout for Skill Helper.", 18, 18, "TOPLEFT", shAidOpt, "BOTTOMLEFT", 0, 0, "shLayoutOpt")
+	local shLayoutOpt = createcheckbox("Use new GUI Layout for Skill Helper.", 18, 18, "TOPLEFT", shCookOpt, "BOTTOMLEFT", 0, 0, "shLayoutOpt")
 	shLayoutOpt:SetScript("OnClick", function() shLayoutToggle() end)
 
 	-- Layout addition Description
@@ -804,7 +803,7 @@ end
 function shUpdateData()
 	
 	-- Capture the SkillIndes for the players Professions
-	local prof1, prof2, archaeology, fishing, cooking, firstAid = GetProfessions()
+	local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
 --	print(prof1 .. ", " .. prof2 .. ", " .. archaeology .. ", " .. fishing .. ", " .. cooking .. ", " .. firstAid)
 	local profs = {}
 
@@ -833,10 +832,6 @@ function shUpdateData()
 		tinsert(profs, cooking)
 	end
 
-	if shSettings.options.shAid == true then
-		-- Build an array of primary professions
-		tinsert(profs, firstAid)
-	end
 --	table.foreach(profs, print)
 			
 	for k, v in pairs(profs) do
@@ -956,12 +951,6 @@ function shInitialize()
 		shCookOpt:SetChecked(true)
 	end
 
-	if shSettings.options.shAid == true then
-		shAidOpt:SetChecked(false)
-	else
-		shAidOpt:SetChecked(true)
-	end
-
 	if shSettings.options.shRev == false then
 		shRevOpt:SetChecked(false)
 		if shSettings.options.shNewLayout == true then
@@ -1025,10 +1014,6 @@ function shGetButton(name, spellNum)
 	elseif name == "Engineering" then
 		if spellNum == 1 then
 			return shSkillNames.Engineering.Icon
-		end
-	elseif name == "First Aid" then
-		if spellNum == 1 then
-			return shSkillNames.FirstAid.Icon
 		end
 	elseif name == "Fishing" then
 		if spellNum == 1 then
@@ -1244,21 +1229,6 @@ function shCookToggle()
 		shSettings.options.shCook = false
 		ChatFrame1:AddMessage("Cooking Bar |cffff0000hidden|r!")
 		shCookOpt:SetChecked(true)
-		shUpdateData();
-	end
-end
-
-function shAidToggle()
-	-- true for bars displayed
-	if shSettings.options.shAid == false then
-		shSettings.options.shAid = true
-		ChatFrame1:AddMessage("First Aid Bar |cff00ff00visible|r!")
-		shAidOpt:SetChecked(false)
-		shUpdateData();
-	elseif shSettings.options.shAid == true then
-		shSettings.options.shAid = false
-		ChatFrame1:AddMessage("First Aid Bar |cffff0000hidden|r!")
-		shAidOpt:SetChecked(true)
 		shUpdateData();
 	end
 end
