@@ -1,7 +1,7 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 4.0.0
+-- Version: 4.0.01
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS
@@ -113,11 +113,11 @@ local shSkillNames = {
 				}
 			}
 
-local SKILLCAP = 300
-local classicCap = 30
+local SKILLCAP = 0
+local classicCap = 300
 local bcNRCataMopCap = 75
 local wodLegionCap = 100
-local bfaStart = 150
+local bfa = 150
 local y = -19
 local imgFolder = "Interface\\ICONS\\"
 local shFrameBG = { bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background.blp", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border.blp", tile = true, tileSize = 32, edgeSize = 16, insets = {left = 3, right = 3, top = 3, bottom = 3}}
@@ -197,6 +197,7 @@ function shEvents_table.eventFrame:ADDON_LOADED(AddOn)
 	end
 
 	shSettings = shSVCheck(defaults, shSettings)
+	SKILLCAP = wodLegionCap
 
 -- Initialize Main Frame
 	shMainFrame()
@@ -705,7 +706,7 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
 		if numSpells == 2 or name == "Mining" then
 --			print("Button 2" .. name)
 			if name == "Alchemy" or name == "Blacksmithing" or name == "Engineering" or name == "Leatherworking" or name == "Tailoring" then
-				print("Spell 2 founf for " .. name .. ".")
+				print("Spell 2 found for " .. name .. ".")
 			else
 				local barBtn2 = CF("Button", nil, barBtn1, "SecureActionButtonTemplate");
 				barBtn2:SetFrameStrata("BACKGROUND");
@@ -1265,12 +1266,12 @@ function shLocker()
 	-- Remember shLock is backwards. true for unlocked and false for locked
 	if shSettings.options.shLock == true then
 		shSettings.options.shLock = false
-		shFrame.buttonLock:SetChecked(false)
+		shFrameLockButton:SetChecked(false)
 		shFrame:EnableMouse(shSettings.options.shLock)
 		ChatFrame1:AddMessage("Skill Helper |cffff0000locked|r!")
 	elseif shSettings.options.shLock == false then
 		shSettings.options.shLock = true
-		shFrame.buttonLock:SetChecked(true)
+		shFrameLockButton:SetChecked(true)
 		shFrame:EnableMouse(shSettings.options.shLock)
 		ChatFrame1:AddMessage("Skill Helper |cff00ff00unlocked|r!")
 	end
