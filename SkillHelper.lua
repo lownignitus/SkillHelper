@@ -1,7 +1,7 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 4.0.01
+-- Version: 4.0.02
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS
@@ -32,10 +32,6 @@ local shSkillNames = {
 						["ID"] = 271990,
 						["Icon"] = "achievement_profession_fishing_northrendangler",
 					},
-				},
-				["FirstAid"] = {
-					["ID"] = 129,
-					["Icon"] = "spell_holy_sealofsacrifice",	
 				},
 				["Alchemy"] = {
 					["ID"] = 171,
@@ -128,7 +124,8 @@ CF = CreateFrame
 local addon_name = "SkillHelper"
 local shFrame
 local shBarFrame
-local shLinksFrame
+--local shLinksFrame
+--local shClassicFrame
 
 -- RegisterForEvent table
 local shEvents_table = {}
@@ -170,7 +167,8 @@ function shEvents_table.eventFrame:ADDON_LOADED(AddOn)
 			["shLock"] = true,
 			["shMouseOver"] = false,
 			["shHidden"] = false,
-			["shlHidden"] = true,
+			--["shlHidden"] = true,
+			["shcHidden"] = true,
 			["shPrim1"] = true,
 			["shPrim2"] = true,
 			["shArch"] = true,
@@ -285,7 +283,7 @@ function shMainFrame()
 		shFrameLockButton:SetHighlightTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Highlight")
 		shFrameLockButton:SetCheckedTexture("Interface\\Buttons\\LockButton-Unlocked-Up")
 
-		-- Links Open Button
+		--[[ Links Open Button
 		local shFrameLinksButton = CF("Button", "shFrameLinksButton", shFrame)
 		shFrameLinksButton:SetFrameStrata("LOW")
 		shFrameLinksButton:SetSize(18, 18)
@@ -303,13 +301,15 @@ function shMainFrame()
 
 		shFrameLinksButton:SetNormalTexture("Interface\\Buttons\\UI-LinkProfession-Up")
 		shFrameLinksButton:SetPushedTexture("Interface\\Buttons\\UI-LinkProfession-Down")
-		shFrameLinksButton:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
+		shFrameLinksButton:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")]]
+
+		-- Classic Ranks Open Button
 
 		-- Prof Open Button
 		local shFrameProfsButton = CF("Button", "shFrameProfsButton", shFrame)
 		shFrameProfsButton:SetFrameStrata("LOW")
 		shFrameProfsButton:SetSize(18, 19)
-		shFrameProfsButton:SetPoint("TOPRIGHT", shFrame, "TOPRIGHT", -42, 1)
+		shFrameProfsButton:SetPoint("TOPRIGHT", shFrame, "TOPRIGHT", -26, 1) -- -42, 1
 
 		shFrameProfsButton:SetScript("OnClick", function(self) ToggleSpellBook("professions"); end)
 		shFrameProfsButton:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
@@ -329,7 +329,7 @@ function shMainFrame()
 		local shFrameOptionsButton = CF("Button", "shFrameOptionsButton", shFrame)
 		shFrameOptionsButton:SetFrameStrata("LOW")
 		shFrameOptionsButton:SetSize(12, 12)
-		shFrameOptionsButton:SetPoint("TOPRIGHT", shFrame, "TOPRIGHT", -59, -6)
+		shFrameOptionsButton:SetPoint("TOPRIGHT", shFrame, "TOPRIGHT", -42, -6) -- -59, -6
 
 		shFrameOptionsButton:SetScript("OnClick", function(self) shOption(); end)
 		shFrameOptionsButton:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
@@ -344,7 +344,8 @@ function shMainFrame()
 		shFrameOptionsButton:SetNormalTexture("Interface\\ICONS\\INV_Eng_GearspringParts")
 		shFrameOptionsButton:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
 
-		shLinkFrame()
+		--shClassicFrame()
+		--shLinkFrame()
 	end
 
 	-- shBarFrame
@@ -360,7 +361,28 @@ function shMainFrame()
 	shFrame:Show()
 end
 
-function shLinkFrame()
+--[[function shClassicFrame()
+	-- shClassicFrame Core UI
+	shClassicFrame = CF("Frame", "shClassicFrame", shFrame)
+	shClassicFrame:SetPoint("TOPRIGHT", shFrame, "BOTTOMRIGHT", 0, 5)
+	shClassicFrame:SetFrameStrata("BACKGROUND")
+	shClassicFrame:SetBackdrop(shFrameBG)
+	shClassicFrame:SetSize(170, 36)
+	shClassicFrame:SetClampedToScreen(true)
+
+	-- shClassicFrame title bar
+	shClassicFrame.title = shClassicFrame:CreateFontString("shClassicFrameTitle", "BACKGROUND")
+	shClassicFrame.title:SetFont("Fonts\\FRIZQT__.TTF", 14)
+	shClassicFrame.title:SetSize(90, 16)
+	shClassicFrame.title:SetPoint("TOP", shClassicFrame, "TOP", 0, -3)
+	shClassicFrame.title:SetText("Classic Ranks")
+
+	-- Mouse Over Functionality
+	shClassicFrame:SetScript("OnEnter", function(self) shMouseOverEnter(); end)
+	shClassicFrame:SetScript("OnLeave", function(self) shMouseOverLeave(); end)
+end]]
+
+--[[function shLinkFrame()
 	-- shLinkFrame Core UI
 	shLinksFrame = CF("Frame", "shLinkFrame", shFrame)
 	shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -5, 0)
@@ -379,7 +401,7 @@ function shLinkFrame()
 	-- Mouse Over Functionality
 	shLinksFrame:SetScript("OnEnter", function(self) shMouseOverEnter(); end)
 	shLinksFrame:SetScript("OnLeave", function(self) shMouseOverLeave(); end)
-end
+end]]
 
 function shEvents_table.eventFrame:SKILL_LINES_CHANGED()
 --	print("Skill Change")
@@ -761,7 +783,7 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
 	shBarFrame:SetHeight((y - 27)* -1)
 end
 
-function shLinksButtons(name, y)
+--[[function shLinksButtons(name, y)
 	if shSettings.options.shNewLayout == true then
 		linkBtn = CF("Button", nil, shLinksFrame, nil)
 		linkBtn:SetFrameStrata("BACKGROUND")
@@ -773,6 +795,7 @@ function shLinksButtons(name, y)
 		linkBtn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
 		linkBtn:SetScript("OnClick", function(self)
 			local link = select(2, GetSpellLink(name))
+			--local link = GetSpellLink(name)
 	--		print(link)
 			if link == nil then ChatFrame1:AddMessage("Could not get link for profession.") return end
 
@@ -799,13 +822,15 @@ function shLinksButtons(name, y)
 		
 		shLinksFrame:SetHeight((y - 23)* -1)
 	end
-end
+end]]
 
 function shUpdateData()
 	
 	-- Capture the SkillIndes for the players Professions
 	local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
---	print(prof1 .. ", " .. prof2 .. ", " .. archaeology .. ", " .. fishing .. ", " .. cooking .. ", " .. firstAid)
+	--print(prof1 .. ", " .. prof2 .. ", " .. archaeology .. ", " .. fishing .. ", " .. cooking)
+	--local testLink = GetTradePlayerItemLink(prof1)
+	--print(testLink)
 	local profs = {}
 
 	if shSettings.options.shPrim1 == true then
@@ -840,7 +865,7 @@ function shUpdateData()
 		local name, texture, rank, maxRank, numSpells, spelloffset, skillLine, rankModifier, specializationIndex, specializationOffset = GetProfessionInfo(v)
 --		print(name .. ", " .. texture .. ", " .. rank .. ", " .. maxRank .. ", " .. numSpells .. ", " .. spelloffset .. ", " .. skillLine .. ", " .. rankModifier .. ", " .. specializationIndex .. ", " .. specializationOffset)
 		shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
-		shLinksButtons(name, y)
+		--shLinksButtons(name, y)
 		y = y - 18
 
 		tinsert( skills, name)
@@ -901,11 +926,11 @@ function shInitialize()
 		shFrame:Hide()
 	end			
 
-	if shSettings.options.shlHidden == false and shSettings.options.shNewLayout == true then
+	--[[if shSettings.options.shlHidden == false and shSettings.options.shNewLayout == true then
 		shLinksFrame:Show()
 	elseif shSettings.options.shlHidden == true and shSettings.options.shNewLayout == true then
 		shLinksFrame:Hide()
-	end
+	end]]
 
 	if shSettings.options.shDB.hide == true then
 		icon:Hide("SkillHelper")
@@ -954,14 +979,14 @@ function shInitialize()
 
 	if shSettings.options.shRev == false then
 		shRevOpt:SetChecked(false)
-		if shSettings.options.shNewLayout == true then
+		--[[if shSettings.options.shNewLayout == true then
 			shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -5, 0)
-		end
+		end]]
 	else
 		shRevOpt:SetChecked(true)
-		if shSettings.options.shNewLayout == true then
+		--[[if shSettings.options.shNewLayout == true then
 			shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -255, 0)
-		end
+		end]]
 	end
 
 	if shSettings.options.shNewLayout == true then
@@ -1108,8 +1133,8 @@ function SlashCmdList.SKILLHELPER(msg, Editbox)
 		shToggle()
 	elseif msg == "lock" then
 		shLocker()
-	elseif msg == "links" then
-		shLinks()
+	--[[elseif msg == "links" then
+		shLinks()]]
 	elseif msg == "layout" then
 		shLayoutToggle()
 	elseif msg == "mmtoggle" then
@@ -1119,13 +1144,13 @@ function SlashCmdList.SKILLHELPER(msg, Editbox)
 	elseif msg == "info" then
 		shInfo()
 	elseif msg == "test" then
-		print(shSkillNames.Archaeology.Spells.Icon)
+		shUpdateData()
 	else
 		ChatFrame1:AddMessage("|cff71C671Skill Helper Slash Commands|r")
 		ChatFrame1:AddMessage("|cff71C671type /SHelper followed by:|r")
 		ChatFrame1:AddMessage("|cff71C671  -- toggle to toggle the addon hidden state|r")
 		ChatFrame1:AddMessage("|cff71C671  -- lock to toggle locking|r")
-		ChatFrame1:AddMessage("|cff71C671  -- links to toggle the Skill Links frame|r")
+		--ChatFrame1:AddMessage("|cff71C671  -- links to toggle the Skill Links frame|r")
 		ChatFrame1:AddMessage("|cff71C671  -- layout to switch between old and new layouts|r")
 		ChatFrame1:AddMessage("|cff71C671  -- mmtoggle to toggle the minimap button on/off|r")
 		ChatFrame1:AddMessage("|cff71C671  -- options to open addon options|r")
@@ -1146,7 +1171,7 @@ function shToggle()
 	end
 end
 
-function shLinks()
+--[[function shLinks()
 	-- functions on same pcinciple as shToggle
 	if shSettings.options.shlHidden == false then
 		shLinksFrame:Hide()
@@ -1157,7 +1182,7 @@ function shLinks()
 		ChatFrame1:AddMessage("Links frame |cff00ff00visible|r!")
 		shSettings.options.shlHidden = false
 	end
-end
+end]]
 
 function shPrim1Toggle()
 	-- true for bars displayed
@@ -1237,17 +1262,17 @@ end
 function shRevToggle()
 	if shSettings.options.shRev == true then
 		shSettings.options.shRev = false
-		if shSettings.options.shNewLayout == true then
+		--[[if shSettings.options.shNewLayout == true then
 			shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -5, 0)
-		end
-		ChatFrame1:AddMessage("Skill Helper set to normal")
+		end]]
+		ChatFrame1:AddMessage("Skill Helper set to Left aligned.")
 		shUpdateData();
 	else
 		shSettings.options.shRev = true		
-		if shSettings.options.shNewLayout == true then
+		--[[if shSettings.options.shNewLayout == true then
 			shLinksFrame:SetPoint("TOPRIGHT", shFrame, "TOPLEFT", -255, 0)
-		end
-		ChatFrame1:AddMessage("Skill Helper reversed")
+		end]]
+		ChatFrame1:AddMessage("Skill Helper set to Right aligned.")
 		shUpdateData();
 	end
 end
@@ -1316,7 +1341,7 @@ function shMiniMap()
 		OnClick = function(clickedframe, button)
 			if button == "RightButton" then
 				if IsShiftKeyDown() then
-					shLinks()
+					--shLinks()
 				else
 					shLocker()
 				end
