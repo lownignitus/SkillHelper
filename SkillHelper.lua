@@ -466,12 +466,10 @@ function shOptionsInit()
 	contact:SetPoint("TOPLEFT", website, "BOTTOMLEFT", 0, -8)
 	local desc = createfont("GameFontHighlight", GetAddOnMetadata(addon_name, "Notes"))
 	desc:SetPoint("TOPLEFT", contact, "BOTTOMLEFT", 0, -8)
-	local desc2 = createfont("GameFontHighlight", GetAddOnMetadata(addon_name, "X-Notes2"))
-	desc2:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -8)
 
 	-- Misc Options Frame
 	local shMiscFrame = CF("Frame", SHMiscFrame, shOptions)
-	shMiscFrame:SetPoint("TOPLEFT", desc2, "BOTTOMLEFT", 0, -8)
+	shMiscFrame:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -8)
 	shMiscFrame:SetBackdrop(shOptionsBG)
 	shMiscFrame:SetSize(240, 240)
 
