@@ -1,7 +1,7 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 4.0.02
+-- Version: 4.0.03
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS
@@ -195,7 +195,7 @@ function shEvents_table.eventFrame:ADDON_LOADED(AddOn)
 	end
 
 	shSettings = shSVCheck(defaults, shSettings)
-	SKILLCAP = wodLegionCap
+	SKILLCAP = bfa
 
 -- Initialize Main Frame
 	shMainFrame()
