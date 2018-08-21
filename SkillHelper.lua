@@ -4,28 +4,66 @@
 -- Version: 4.0.03
 -- Desc: A simple addon for tracking and using skills
 
--- GLOBALS
+-- GLOBALS [ID is aka skillLine in GetProfessionInfo]
 local shSkillNames = { 
-				["Archaeology"] = {
-					["ID"] = 794,
-					["Icon"] = "trade_archaeology",
+				["_165"] = {
+					["enName"] = "Leatherworking",
+					["Icon"] = "inv_misc_armorkit_17",
+				},
+				["_164"] = {
+					["enName"] = "Blacksmithing",
+					["Icon"] = "trade_blacksmithing",
+				},
+				["_171"] = {
+					["enName"] = "Alchemy",
+					["Icon"] = "trade_alchemy",
+				},
+				["_182"] = {
+					["enName"] = "Herbalism",
+					["Icon"] = "spell_nature_naturetouchgrow",
 					["Spells"] = {
-						["Name"] = "Survey",
-						["ID"] = 80451,
-						["Icon"] = "inv_misc_shovel_01",
+						["Name"] = "Herbalism Skills",
+						["ID"] = 193290,
+						["Icon"] = "inv_misc_bag_18",
 					},
-				}, 
-				["Cooking"] = {
-					["ID"] = 185,
+				},
+				["_185"] = {
+					["enName"] = "Cooking",
 					["Icon"] = "inv_misc_food_15",
 					["Spells"] = {
 						["Name"] = "Cooking Fire",
 						["ID"] = 818,
 						["Icon"] = "spell_fire_fire",
 					},
-				}, 
-				["Fishing"] = {
-					["ID"] = 356,
+				},
+				["_186"] = {
+					["enName"] = "Mining",
+					["Icon"] = "trade_mining",
+					["Spells"] = {
+						["Name"] = "Mining Skills",
+						["ID"] = 2656,
+						["Icon"] = "spell_fire_flameblades",
+					},
+				},
+				["_197"] = {
+					["enName"] = "Tailoring",
+					["Icon"] = "trade_tailoring",
+				},
+				["_202"] = {
+					["enName"] = "Engineering",
+					["Icon"] = "trade_engineering",
+				},
+				["_333"] = {
+					["enName"] = "Enchanting",
+					["Icon"] = "trade_engraving",
+					["Spells"] = {
+						["Name"] = "Disenchant",
+						["ID"] = 13262,
+						["Icon"] = "inv_enchant_disenchant",
+					},
+				},
+				["_356"] = {
+					["enName"] = "Fishing",
 					["Icon"] = "trade_fishing",
 					["Spells"] = {
 						["Name"] = "Fishing Skills",
@@ -33,80 +71,42 @@ local shSkillNames = {
 						["Icon"] = "achievement_profession_fishing_northrendangler",
 					},
 				},
-				["Alchemy"] = {
-					["ID"] = 171,
-					["Icon"] = "trade_alchemy",
-				}, 
-				["Blacksmithing"] = {
-					["ID"] = 164,
-					["Icon"] = "trade_blacksmithing",
-				}, 
-				["Enchanting"] = {
-					["ID"] = 333,
-					["Icon"] = "trade_engraving",
-					["Spells"] = {
-						["Name"] = "Disenchant",
-						["ID"] = 13262,
-						["Icon"] = "inv_enchant_disenchant",
-					},
-				}, 
-				["Engineering"] = {
-					["ID"] = 202,
-					["Icon"] = "trade_engineering",
-				}, 
-				["Herbalism"] = {
-					["ID"] = 182,
-					["Icon"] = "spell_nature_naturetouchgrow",
-					["Spells"] = {
-						["Name"] = "Herbalism Skills",
-						["ID"] = 193290,
-						["Icon"] = "inv_misc_bag_18",
-					},
-				}, 
-				["Inscription"] = {
-					["ID"] = 773,
-					["Icon"] = "inv_inscription_tradeskill01",
-					["Spells"] = {
-						["Name"] = "Milling",
-						["ID"] = 51005,
-						["Icon"] = "ability_miling",
-					},
-				}, 
-				["Jewelcrafting"] = {
-					["ID"] = 755,
-					["Icon"] = "inv_misc_gem_01",
-					["Spells"] = {
-						["Name"] = "Prospecting",
-						["ID"] = 31252,
-						["Icon"] = "inv_misc_gem_bloodgem_01",
-					},
-				}, 
-				["Leatherworking"] = {
-					["ID"] = 165,
-					["Icon"] = "inv_misc_armorkit_17",
-				}, 
-				["Mining"] = {
-					["ID"] = 186,
-					["Icon"] = "trade_mining",
-					["Spells"] = {
-						["Name"] = "Mining Skills",
-						["ID"] = 2656,
-						["Icon"] = "spell_fire_flameblades",
-					},
-				}, 
-				["Skinning"] = {
-					["ID"] = 393,
+				["_393"] = {
+					["enName"] = "Skinning",
 					["Icon"] = "inv_misc_pelt_wolf_01",
 					["Spells"] = {
 						["Name"] = "Skinning Skills",
 						["ID"] = 194174,
 						["Icon"] = "inv_misc_skinningknife",
 					},
-				}, 
-				["Tailoring"] = {
-					["ID"] = 197,
-					["Icon"] = "trade_tailoring",
-				}
+				},
+				["_755"] = {
+					["enName"] = "Jewelcrafting",
+					["Icon"] = "inv_misc_gem_01",
+					["Spells"] = {
+						["Name"] = "Prospecting",
+						["ID"] = 31252,
+						["Icon"] = "inv_misc_gem_bloodgem_01",
+					},
+				},
+				["_773"] = {
+					["enName"] = "Inscription",
+					["Icon"] = "inv_inscription_tradeskill01",
+					["Spells"] = {
+						["Name"] = "Milling",
+						["ID"] = 51005,
+						["Icon"] = "ability_miling",
+					},
+				},
+				["_794"] = {
+					["enName"] = "Archaeology",
+					["Icon"] = "trade_archaeology",
+					["Spells"] = {
+						["Name"] = "Survey",
+						["ID"] = 80451,
+						["Icon"] = "inv_misc_shovel_01",
+					},
+				}				
 			}
 
 local SKILLCAP = 0
@@ -656,7 +656,7 @@ local skills = {}
 -- Frames Table
 local bars = {}
 
-function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
+function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, skillLine, y)
 --	print("Profession: " .. name .. ", texture: " .. texture)
 	if shSettings.options.shRev == false then
 		-- Skill Bar XbPoint
@@ -716,16 +716,17 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
 		barBtn1:SetAttribute("type", "spell");
 		barBtn1:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
 		barBtn1:SetAttribute("spell", name);
-		barBtn1BG = { bgFile = imgFolder .. shGetButton(name, 1), edgeFile = nil, tile = false, tileSize = 18, edgeSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}};
-		barBtn1:SetBackdrop(barBtn1BG);
+		--barBtn1BG = { bgFile = imgFolder .. shGetButton(skillLine, 1), edgeFile = nil, tile = false, tileSize = 18, edgeSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}};
+		--barBtn1:SetBackdrop(barBtn1BG);
+		barBtn1:SetNormalTexture(texture)
 		barBtn1:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines(); GameTooltip:AddLine(name); GameTooltip:Show(); shMouseOverEnter(); end)
 		barBtn1:SetScript("OnLeave", function(self) GameTooltip:Hide(); shMouseOverLeave(); end)
 		bar.btn1 = barBtn1
 
 		-- The second button on the skills action bar if applicable
-		if numSpells == 2 or name == "Mining" then
+		if numSpells == 2 or skillLine == 186 then
 --			print("Button 2" .. name)
-			if name == "Alchemy" or name == "Blacksmithing" or name == "Engineering" or name == "Leatherworking" or name == "Tailoring" then
+			if skillLine == 171 or skillLine == 164 or skillLine == 202 or skillLine == 165 or skillLine == 197 then
 				print("Spell 2 found for " .. name .. ".")
 			else
 				local barBtn2 = CF("Button", nil, barBtn1, "SecureActionButtonTemplate");
@@ -734,11 +735,14 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
 				barBtn2:SetSize(18,18);
 				barBtn2:EnableMouse(true);
 				barBtn2:SetAttribute("type", "spell");
-				barBtn2:SetAttribute("spell", shGetSpell(name, 2));
-				barBtn2BG = { bgFile = imgFolder .. shGetButton(name, 2) .. ".BLP", edgeFile = nil, tile = false, tileSize = 18, edgeSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}};
-				barBtn2:SetBackdrop(barBtn2BG);
+				local name2 = shGetSpell(skillLine, numSpells)
+				barBtn2:SetAttribute("spell", name2);
+				--barBtn2BG = { bgFile = imgFolder .. shGetButton(skillLine, 2) .. ".BLP", edgeFile = nil, tile = false, tileSize = 18, edgeSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}};
+				--barBtn2:SetBackdrop(barBtn2BG);
+				local texture2 = shGetButton(skillLine, numSpells)
+				barBtn2:SetNormalTexture(texture2)
 				barBtn2:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
-				barBtn2:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines(); GameTooltip:AddLine(shGetSpell(name, 2)); GameTooltip:Show(); shMouseOverEnter(); end)
+				barBtn2:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines(); GameTooltip:AddLine(name2); GameTooltip:Show(); shMouseOverEnter(); end)
 				barBtn2:SetScript("OnLeave", function(self) GameTooltip:Hide(); shMouseOverLeave(); end)
 				bar.btn2 = barBtn2
 			end
@@ -862,7 +866,7 @@ function shUpdateData()
 		-- Fetch the details for each Profession
 		local name, texture, rank, maxRank, numSpells, spelloffset, skillLine, rankModifier, specializationIndex, specializationOffset = GetProfessionInfo(v)
 --		print(name .. ", " .. texture .. ", " .. rank .. ", " .. maxRank .. ", " .. numSpells .. ", " .. spelloffset .. ", " .. skillLine .. ", " .. rankModifier .. ", " .. specializationIndex .. ", " .. specializationOffset)
-		shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, y)
+		shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, skillLine, y)
 		--shLinksButtons(name, y)
 		y = y - 18
 
@@ -1006,122 +1010,131 @@ function shMouseOverLeave()
 	end
 end
 
-function shGetButton(name, spellNum)
---	local sName, rank, icon, castTime, minRange, maxRange = GetSpellInfo(name)
+function shGetButton(skillLine, spellNum)
+local sName, rank, icon, castTime, minRange, maxRange
 --	print(sName .. ", " .. rank .. ", " .. icon .. ", " .. castTime .. ", " .. minRange .. ", " .. maxRange)
-	if name == "Alchemy" then
+	if skillLine == 171 then
 		if spellNum == 1 then
-			return shSkillNames.Alchemy.Icon
+			return shSkillNames._171.Icon
 		end
-	elseif name == "Archaeology" then
+	elseif skillLine == 171 then
 		if spellNum == 1 then
-			return shSkillNames.Archaeology.Icon
+			return shSkillNames._794.Icon
 		elseif spellNum == 2 then
-			return shSkillNames.Archaeology.Spells.Icon
+			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._794.Spells.ID)
+			return icon
 		end
-	elseif name == "Blacksmithing" then
+	elseif skillLine == 164 then
 		if spellNum == 1 then
-			return shSkillNames.Blacksmithing.Icon
+			return shSkillNames._164.Icon
 		end
-	elseif name == "Cooking" then
+	elseif skillLine == 184 then
 		if spellNum == 1 then
-			return shSkillNames.Cooking.Icon
+			return shSkillNames._184.Icon
 		elseif spellNum == 2 then
-			return shSkillNames.Cooking.Spells.Icon
+			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._184.Spells.ID)
+			return icon
 		end
-	elseif name == "Enchanting" then
+	elseif skillLine == 333 then
 		if spellNum == 1 then
-			return shSkillNames.Enchanting.Icon
+			return shSkillNames._333.Icon
 		elseif spellNum == 2 then
-			return shSkillNames.Enchanting.Spells.Icon
+			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._333.Spells.ID)
+			return icon
 		end
-	elseif name == "Engineering" then
+	elseif skillLine == 202 then
 		if spellNum == 1 then
-			return shSkillNames.Engineering.Icon
+			return shSkillNames._202.Icon
 		end
-	elseif name == "Fishing" then
+	elseif skillLine == 356 then
 		if spellNum == 1 then
-			return shSkillNames.Fishing.Icon
+			return shSkillNames._356.Icon
 		elseif spellNum == 2 then
-			return shSkillNames.Fishing.Spells.Icon
+			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._356.Spells.ID)
+			return icon
 		end
-	elseif name == "Herbalism" then
+	elseif skillLine == 182 then
 		if spellNum == 1 then
-			return shSkillNames.Herbalism.Icon
+			return shSkillNames._182.Icon
 		elseif spellNum == 2 then
-			return shSkillNames.Herbalism.Spells.Icon
+			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._182.Spells.ID)
+			return icon
 		end
-	elseif name == "Inscription" then
+	elseif skillLine == 773 then
 		if spellNum == 1 then
-			return shSkillNames.Inscription.Icon
+			return shSkillNames._773.Icon
 		elseif spellNum == 2 then
-			return shSkillNames.Inscription.Spells.Icon
+			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._773.Spells.ID)
+			return icon
 		end
-	elseif name == "Jewelcrafting" then
+	elseif skillLine == 755 then
 		if spellNum == 1 then
-			return shSkillNames.Jewelcrafting.Icon
+			return shSkillNames._755.Icon
 		elseif spellNum == 2 then
-			return shSkillNames.Jewelcrafting.Spells.Icon
+			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._755.Spells.ID)
+			return icon
 		end
-	elseif name == "Leatherworking" then
+	elseif skillLine == 165 then
 		if spellNum == 1 then
-			return shSkillNames.Leatherworking.Icon
+			return shSkillNames._165.Icon
 		end
-	elseif name == "Mining" then
+	elseif skillLine == 186 then
 		if spellNum == 1 then
-			return shSkillNames.Mining.Icon
+			return shSkillNames._186.Icon
 		elseif spellNum == 2 then
-			return shSkillNames.Mining.Spells.Icon
+			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._186.Spells.ID)
+			return icon
 		end
-	elseif name == "Skinning" then
+	elseif skillLine == 393 then
 		if spellNum == 1 then
-			return shSkillNames.Skinning.Icon
+			return shSkillNames._393.Icon
 		elseif spellNum == 2 then
-			return shSkillNames.Skinning.Spells.Icon
+			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._393.Spells.ID)
+			return icon
 		end
-	elseif name == "Tailoring" then
+	elseif skillLine == 197 then
 		if spellNum == 1 then
-			return shSkillNames.Tailoring.Icon
+			return shSkillNames._197.Icon
 		end
 	end
 end
 
-function shGetSpell(name, spellNum)
-	if name == "Archaeology" then
+function shGetSpell(skillLine, spellNum)
+	if skillLine == 794 then
 		if spellNum == 2 then
-			return shSkillNames.Archaeology.Spells.Name
+			return shSkillNames._794.Spells.Name
 		end
-	elseif name == "Cooking" then
+	elseif skillLine == 184 then
 		if spellNum == 2 then
-			return shSkillNames.Cooking.Spells.Name
+			return shSkillNames._184.Spells.Name
 		end
-	elseif name == "Enchanting" then
+	elseif skillLine == 333 then
 		if spellNum == 2 then
-			return shSkillNames.Enchanting.Spells.Name
+			return shSkillNames._333.Spells.Name
 		end
-	elseif name == "Fishing" then
+	elseif skillLine == 256 then
 		if spellNum == 2 then
-			return shSkillNames.Fishing.Spells.Name
+			return shSkillNames._356.Spells.Name
 		end
-	elseif name == "Herbalism" then
+	elseif skillLine == 182 then
 		if spellNum == 2 then
-			return shSkillNames.Herbalism.Spells.Name
+			return shSkillNames._182.Spells.Name
 		end
-	elseif name == "Inscription" then
+	elseif skillLine == 773 then
 		if spellNum == 2 then
-			return shSkillNames.Inscription.Spells.Name
+			return shSkillNames._773.Spells.Name
 		end
-	elseif name == "Jewelcrafting" then
+	elseif skillLine == 755 then
 		if spellNum == 2 then
-			return shSkillNames.Jewelcrafting.Spells.Name
+			return shSkillNames._755.Spells.Name
 		end
-	elseif name == "Mining" then
+	elseif skillLine == 186 then
 		if spellNum == 2 then
-			return shSkillNames.Mining.Spells.Name
+			return shSkillNames._186.Spells.Name
 		end
-	elseif name == "Skinning" then
+	elseif skillLine == 393 then
 		if spellNum == 2 then
-			return shSkillNames.Skinning.Spells.Name
+			return shSkillNames._393.Spells.Name
 		end
 	end
 end
