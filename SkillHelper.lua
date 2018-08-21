@@ -124,8 +124,6 @@ CF = CreateFrame
 local addon_name = "SkillHelper"
 local shFrame
 local shBarFrame
---local shLinksFrame
---local shClassicFrame
 
 -- RegisterForEvent table
 local shEvents_table = {}
@@ -283,28 +281,6 @@ function shMainFrame()
 		shFrameLockButton:SetHighlightTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Highlight")
 		shFrameLockButton:SetCheckedTexture("Interface\\Buttons\\LockButton-Unlocked-Up")
 
-		--[[ Links Open Button
-		local shFrameLinksButton = CF("Button", "shFrameLinksButton", shFrame)
-		shFrameLinksButton:SetFrameStrata("LOW")
-		shFrameLinksButton:SetSize(18, 18)
-		shFrameLinksButton:SetPoint("TOPRIGHT", shFrame, "TOPRIGHT", -26, -3)
-
-		shFrameLinksButton:SetScript("OnClick", function(self) shLinks(); end)
-		shFrameLinksButton:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-												GameTooltip:ClearLines();
-												GameTooltip:AddLine("Links");
-												GameTooltip:AddLine("Click to toggle the Links frame.");
-												GameTooltip:Show();
-												shMouseOverEnter(); end)
-		shFrameLinksButton:SetScript("OnLeave", function(self) GameTooltip:Hide();
-												shMouseOverLeave(); end)
-
-		shFrameLinksButton:SetNormalTexture("Interface\\Buttons\\UI-LinkProfession-Up")
-		shFrameLinksButton:SetPushedTexture("Interface\\Buttons\\UI-LinkProfession-Down")
-		shFrameLinksButton:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")]]
-
-		-- Classic Ranks Open Button
-
 		-- Prof Open Button
 		local shFrameProfsButton = CF("Button", "shFrameProfsButton", shFrame)
 		shFrameProfsButton:SetFrameStrata("LOW")
@@ -343,9 +319,6 @@ function shMainFrame()
 
 		shFrameOptionsButton:SetNormalTexture("Interface\\ICONS\\INV_Eng_GearspringParts")
 		shFrameOptionsButton:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
-
-		--shClassicFrame()
-		--shLinkFrame()
 	end
 
 	-- shBarFrame
@@ -360,48 +333,6 @@ function shMainFrame()
 	-- Display Main frame
 	shFrame:Show()
 end
-
---[[function shClassicFrame()
-	-- shClassicFrame Core UI
-	shClassicFrame = CF("Frame", "shClassicFrame", shFrame)
-	shClassicFrame:SetPoint("TOPRIGHT", shFrame, "BOTTOMRIGHT", 0, 5)
-	shClassicFrame:SetFrameStrata("BACKGROUND")
-	shClassicFrame:SetBackdrop(shFrameBG)
-	shClassicFrame:SetSize(170, 36)
-	shClassicFrame:SetClampedToScreen(true)
-
-	-- shClassicFrame title bar
-	shClassicFrame.title = shClassicFrame:CreateFontString("shClassicFrameTitle", "BACKGROUND")
-	shClassicFrame.title:SetFont("Fonts\\FRIZQT__.TTF", 14)
-	shClassicFrame.title:SetSize(90, 16)
-	shClassicFrame.title:SetPoint("TOP", shClassicFrame, "TOP", 0, -3)
-	shClassicFrame.title:SetText("Classic Ranks")
-
-	-- Mouse Over Functionality
-	shClassicFrame:SetScript("OnEnter", function(self) shMouseOverEnter(); end)
-	shClassicFrame:SetScript("OnLeave", function(self) shMouseOverLeave(); end)
-end]]
-
---[[function shLinkFrame()
-	-- shLinkFrame Core UI
-	shLinksFrame = CF("Frame", "shLinkFrame", shFrame)
-	shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -5, 0)
-	shLinksFrame:SetFrameStrata("BACKGROUND")
-	shLinksFrame:SetBackdrop(shFrameBG)
-	shLinksFrame:SetSize(52, 36)
-	shLinksFrame:SetClampedToScreen(true)
-
-	-- shLinksFrame title bar
-	shLinksFrame.title = shLinksFrame:CreateFontString("shLinkFrameTitle", "BACKGROUND")
-	shLinksFrame.title:SetFont("Fonts\\FRIZQT__.TTF", 14)
-	shLinksFrame.title:SetSize(45, 16)
-	shLinksFrame.title:SetPoint("TOPLEFT", shLinksFrame, "TOPLEFT", 4, -3)
-	shLinksFrame.title:SetText("Links")
-
-	-- Mouse Over Functionality
-	shLinksFrame:SetScript("OnEnter", function(self) shMouseOverEnter(); end)
-	shLinksFrame:SetScript("OnLeave", function(self) shMouseOverLeave(); end)
-end]]
 
 function shEvents_table.eventFrame:SKILL_LINES_CHANGED()
 --	print("Skill Change")
@@ -726,8 +657,9 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, skillL
 		-- The second button on the skills action bar if applicable
 		if numSpells == 2 or skillLine == 186 then
 --			print("Button 2" .. name)
+			-- Alchemy, Blacksmithing, Engineering, Leatherworking, or Tailoring
 			if skillLine == 171 or skillLine == 164 or skillLine == 202 or skillLine == 165 or skillLine == 197 then
-				print("Spell 2 found for " .. name .. ".")
+				print("Spell 2 found for " .. name .. ", please report this.")
 			else
 				local barBtn2 = CF("Button", nil, barBtn1, "SecureActionButtonTemplate");
 				barBtn2:SetFrameStrata("BACKGROUND");
@@ -785,54 +717,11 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, skillL
 	shBarFrame:SetHeight((y - 27)* -1)
 end
 
---[[function shLinksButtons(name, y)
-	if shSettings.options.shNewLayout == true then
-		linkBtn = CF("Button", nil, shLinksFrame, nil)
-		linkBtn:SetFrameStrata("BACKGROUND")
-		linkBtn:SetPoint("TOPRIGHT", shLinksFrame, "TOPRIGHT", -5, y-4)
-		linkBtn:SetSize(40, 18)
-		linkBtn:EnableMouse(true)
-		linkBtnBG = { edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", tile = true, tileSize = 32, edgeSize = 16, insets = {left = 3, right = 3, top = 3, bottom = 3}};
-		linkBtn:SetBackdrop(linkBtnBG);
-		linkBtn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
-		linkBtn:SetScript("OnClick", function(self)
-			local link = select(2, GetSpellLink(name))
-			--local link = GetSpellLink(name)
-	--		print(link)
-			if link == nil then ChatFrame1:AddMessage("Could not get link for profession.") return end
-
-			local activeEditBox = ChatEdit_GetActiveWindow()
-			if MacroFrameText and MacroFrameText:IsShown() and MacroFrameText:HasFocus() then
-				local text = MacroFrameText:GetText() .. link
-				if strlenutf8(text) <= 255 then
-					MacroFrameText:Insert(link)
-				end
-			elseif activeEditBox then
-				ChatEdit_InsertLink(link)
-			end
-		end)
-		
-		local linkTxt = linkBtn:CreateFontString(nil, "ARTWORK");
-		isValid = linkTxt:SetFont("Fonts\\FRIZQT__.TTF", 14);
-		linkTxt:SetPoint("CENTER", linkBtn, "CENTER", 0, 0);
-		linkBtn.text = linkTxt
-
-		linkBtn:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines(); GameTooltip:AddLine(name .. " Link"); GameTooltip:Show(); shMouseOverEnter(); end)
-		linkBtn:SetScript("OnLeave", function(self) GameTooltip:Hide(); shMouseOverLeave(); end)
-
-		linkBtn.text:SetText("|cFFFFFF00Link|r")
-		
-		shLinksFrame:SetHeight((y - 23)* -1)
-	end
-end]]
-
 function shUpdateData()
 	
 	-- Capture the SkillIndes for the players Professions
 	local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
-	--print(prof1 .. ", " .. prof2 .. ", " .. archaeology .. ", " .. fishing .. ", " .. cooking)
-	--local testLink = GetTradePlayerItemLink(prof1)
-	--print(testLink)
+
 	local profs = {}
 
 	if shSettings.options.shPrim1 == true then
@@ -867,7 +756,6 @@ function shUpdateData()
 		local name, texture, rank, maxRank, numSpells, spelloffset, skillLine, rankModifier, specializationIndex, specializationOffset = GetProfessionInfo(v)
 --		print(name .. ", " .. texture .. ", " .. rank .. ", " .. maxRank .. ", " .. numSpells .. ", " .. spelloffset .. ", " .. skillLine .. ", " .. rankModifier .. ", " .. specializationIndex .. ", " .. specializationOffset)
 		shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, skillLine, y)
-		--shLinksButtons(name, y)
 		y = y - 18
 
 		tinsert( skills, name)
@@ -927,13 +815,7 @@ function shInitialize()
 	else
 		shFrame:Hide()
 	end			
-
-	--[[if shSettings.options.shlHidden == false and shSettings.options.shNewLayout == true then
-		shLinksFrame:Show()
-	elseif shSettings.options.shlHidden == true and shSettings.options.shNewLayout == true then
-		shLinksFrame:Hide()
-	end]]
-
+	
 	if shSettings.options.shDB.hide == true then
 		icon:Hide("SkillHelper")
 		shMMToggleOpt:SetChecked(true)
@@ -981,14 +863,8 @@ function shInitialize()
 
 	if shSettings.options.shRev == false then
 		shRevOpt:SetChecked(false)
-		--[[if shSettings.options.shNewLayout == true then
-			shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -5, 0)
-		end]]
 	else
 		shRevOpt:SetChecked(true)
-		--[[if shSettings.options.shNewLayout == true then
-			shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -255, 0)
-		end]]
 	end
 
 	if shSettings.options.shNewLayout == true then
@@ -1012,129 +888,100 @@ end
 
 function shGetButton(skillLine, spellNum)
 local sName, rank, icon, castTime, minRange, maxRange
---	print(sName .. ", " .. rank .. ", " .. icon .. ", " .. castTime .. ", " .. minRange .. ", " .. maxRange)
 	if skillLine == 171 then
-		if spellNum == 1 then
-			return shSkillNames._171.Icon
-		end
-	elseif skillLine == 171 then
-		if spellNum == 1 then
-			return shSkillNames._794.Icon
-		elseif spellNum == 2 then
+		if spellNum == 2 then
 			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._794.Spells.ID)
 			return icon
 		end
-	elseif skillLine == 164 then
-		if spellNum == 1 then
-			return shSkillNames._164.Icon
-		end
 	elseif skillLine == 184 then
-		if spellNum == 1 then
-			return shSkillNames._184.Icon
-		elseif spellNum == 2 then
+		if spellNum == 2 then
 			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._184.Spells.ID)
 			return icon
 		end
 	elseif skillLine == 333 then
-		if spellNum == 1 then
-			return shSkillNames._333.Icon
-		elseif spellNum == 2 then
+		if spellNum == 2 then
 			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._333.Spells.ID)
 			return icon
 		end
-	elseif skillLine == 202 then
-		if spellNum == 1 then
-			return shSkillNames._202.Icon
-		end
 	elseif skillLine == 356 then
-		if spellNum == 1 then
-			return shSkillNames._356.Icon
-		elseif spellNum == 2 then
+		if spellNum == 2 then
 			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._356.Spells.ID)
 			return icon
 		end
 	elseif skillLine == 182 then
-		if spellNum == 1 then
-			return shSkillNames._182.Icon
-		elseif spellNum == 2 then
+		if spellNum == 2 then
 			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._182.Spells.ID)
 			return icon
 		end
 	elseif skillLine == 773 then
-		if spellNum == 1 then
-			return shSkillNames._773.Icon
-		elseif spellNum == 2 then
+		if spellNum == 2 then
 			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._773.Spells.ID)
 			return icon
 		end
 	elseif skillLine == 755 then
-		if spellNum == 1 then
-			return shSkillNames._755.Icon
-		elseif spellNum == 2 then
+		if spellNum == 2 then
 			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._755.Spells.ID)
 			return icon
 		end
-	elseif skillLine == 165 then
-		if spellNum == 1 then
-			return shSkillNames._165.Icon
-		end
 	elseif skillLine == 186 then
-		if spellNum == 1 then
-			return shSkillNames._186.Icon
-		elseif spellNum == 2 then
+		if spellNum == 2 then
 			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._186.Spells.ID)
 			return icon
 		end
 	elseif skillLine == 393 then
-		if spellNum == 1 then
-			return shSkillNames._393.Icon
-		elseif spellNum == 2 then
+		if spellNum == 2 then
 			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._393.Spells.ID)
 			return icon
-		end
-	elseif skillLine == 197 then
-		if spellNum == 1 then
-			return shSkillNames._197.Icon
 		end
 	end
 end
 
 function shGetSpell(skillLine, spellNum)
+	local sName, rank, icon, castTime, minRange, maxRange
 	if skillLine == 794 then
 		if spellNum == 2 then
-			return shSkillNames._794.Spells.Name
+			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._794.Spells.ID)
+			return sName
 		end
 	elseif skillLine == 184 then
 		if spellNum == 2 then
-			return shSkillNames._184.Spells.Name
+			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._184.Spells.ID)
+			return sName
 		end
 	elseif skillLine == 333 then
 		if spellNum == 2 then
-			return shSkillNames._333.Spells.Name
+			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._333.Spells.ID)
+			return sName
 		end
 	elseif skillLine == 256 then
 		if spellNum == 2 then
-			return shSkillNames._356.Spells.Name
+			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._256.Spells.ID)
+			return sName
 		end
 	elseif skillLine == 182 then
 		if spellNum == 2 then
-			return shSkillNames._182.Spells.Name
+			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._182.Spells.ID)
+			return sName
 		end
 	elseif skillLine == 773 then
 		if spellNum == 2 then
-			return shSkillNames._773.Spells.Name
+			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._773.Spells.ID)
+			return sName
 		end
 	elseif skillLine == 755 then
 		if spellNum == 2 then
-			return shSkillNames._755.Spells.Name
+			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._755.Spells.ID)
+			return sName
 		end
 	elseif skillLine == 186 then
 		if spellNum == 2 then
-			return shSkillNames._186.Spells.Name
+			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._186.Spells.ID)
+			return sName
 		end
 	elseif skillLine == 393 then
 		if spellNum == 2 then
-			return shSkillNames._393.Spells.Name
+			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._393.Spells.ID)
+			return sName
 		end
 	end
 end
@@ -1144,8 +991,6 @@ function SlashCmdList.SKILLHELPER(msg, Editbox)
 		shToggle()
 	elseif msg == "lock" then
 		shLocker()
-	--[[elseif msg == "links" then
-		shLinks()]]
 	elseif msg == "layout" then
 		shLayoutToggle()
 	elseif msg == "mmtoggle" then
@@ -1161,7 +1006,6 @@ function SlashCmdList.SKILLHELPER(msg, Editbox)
 		ChatFrame1:AddMessage("|cff71C671type /SHelper followed by:|r")
 		ChatFrame1:AddMessage("|cff71C671  -- toggle to toggle the addon hidden state|r")
 		ChatFrame1:AddMessage("|cff71C671  -- lock to toggle locking|r")
-		--ChatFrame1:AddMessage("|cff71C671  -- links to toggle the Skill Links frame|r")
 		ChatFrame1:AddMessage("|cff71C671  -- layout to switch between old and new layouts|r")
 		ChatFrame1:AddMessage("|cff71C671  -- mmtoggle to toggle the minimap button on/off|r")
 		ChatFrame1:AddMessage("|cff71C671  -- options to open addon options|r")
@@ -1181,19 +1025,6 @@ function shToggle()
 		shSettings.options.shHidden = false
 	end
 end
-
---[[function shLinks()
-	-- functions on same pcinciple as shToggle
-	if shSettings.options.shlHidden == false then
-		shLinksFrame:Hide()
-		ChatFrame1:AddMessage("Links frame |cffff0000hidden|r!")
-		shSettings.options.shlHidden = true
-	elseif shSettings.options.shlHidden == true then
-		shLinksFrame:Show()
-		ChatFrame1:AddMessage("Links frame |cff00ff00visible|r!")
-		shSettings.options.shlHidden = false
-	end
-end]]
 
 function shPrim1Toggle()
 	-- true for bars displayed
@@ -1273,16 +1104,10 @@ end
 function shRevToggle()
 	if shSettings.options.shRev == true then
 		shSettings.options.shRev = false
-		--[[if shSettings.options.shNewLayout == true then
-			shLinksFrame:SetPoint("TOPLEFT", shFrame, "TOPRIGHT", -5, 0)
-		end]]
 		ChatFrame1:AddMessage("Skill Helper set to Left aligned.")
 		shUpdateData();
 	else
-		shSettings.options.shRev = true		
-		--[[if shSettings.options.shNewLayout == true then
-			shLinksFrame:SetPoint("TOPRIGHT", shFrame, "TOPLEFT", -255, 0)
-		end]]
+		shSettings.options.shRev = true
 		ChatFrame1:AddMessage("Skill Helper set to Right aligned.")
 		shUpdateData();
 	end
