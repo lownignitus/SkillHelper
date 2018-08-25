@@ -231,12 +231,6 @@ function shMainFrame()
 	shFrame:SetScript("OnEnter", function(self) shMouseOverEnter(); end)
 	shFrame:SetScript("OnLeave", function(self) shMouseOverLeave(); end)
 
-	-- shFrame Hide on Pet Battle
-	shFrame:SetScript("OnShow", function(self)
-  		PetBattleFrame:HookScript("OnShow",function() self:Hide(); end);
-  		PetBattleFrame:HookScript("OnHide",function() if shSettings.options.shHidden == false then self:Show(); end end);
-  	end);
-
 	-- shFrame New layout UI
 	if shSettings.options.shNewLayout == true then
 		-- Title
@@ -1232,3 +1226,7 @@ function shMiniMap()
 		icon:Register("SkillHelper", shLDB, shSettings.options.shDB)
 	end
 end
+
+-- shFrame Hide on Pet Battle
+PetBattleFrame:HookScript("OnShow",function() shFrame:Hide(); end);
+PetBattleFrame:HookScript("OnHide",function() if shSettings.options.shHidden == false then shFrame:Show(); end end);
