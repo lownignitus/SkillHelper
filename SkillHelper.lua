@@ -1,7 +1,7 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 4.0.03
+-- Version: 4.0.04
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS [ID is aka skillLine in GetProfessionInfo]
@@ -33,6 +33,7 @@ local shSkillNames = {
 					["Spells"] = {
 						["Name"] = "Cooking Fire",
 						["ID"] = 818,
+						["Texture"] = 135805,
 						["Icon"] = "spell_fire_fire",
 					},
 				},
@@ -42,6 +43,7 @@ local shSkillNames = {
 					["Spells"] = {
 						["Name"] = "Mining Skills",
 						["ID"] = 2656,
+						["Texture"] = 135811,
 						["Icon"] = "spell_fire_flameblades",
 					},
 				},
@@ -104,6 +106,7 @@ local shSkillNames = {
 					["Spells"] = {
 						["Name"] = "Survey",
 						["ID"] = 80451,
+						["Texture"] = 134435,
 						["Icon"] = "inv_misc_shovel_01",
 					},
 				}				
@@ -644,8 +647,8 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, skillL
 		barBtn1:SetPoint("TOPLEFT", bar, "TOPRIGHT", btnax, 0);
 		barBtn1:SetSize(18,18);
 		barBtn1:EnableMouse(true);
-		barBtn1:SetAttribute("type", "spell");
 		barBtn1:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
+		barBtn1:SetAttribute("type", "spell");
 		barBtn1:SetAttribute("spell", name);
 		--barBtn1BG = { bgFile = imgFolder .. shGetButton(skillLine, 1), edgeFile = nil, tile = false, tileSize = 18, edgeSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}};
 		--barBtn1:SetBackdrop(barBtn1BG);
@@ -666,12 +669,12 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, skillL
 				barBtn2:SetPoint("TOPLEFT", barBtn1, "TOPRIGHT", btnbx, 0);
 				barBtn2:SetSize(18,18);
 				barBtn2:EnableMouse(true);
-				barBtn2:SetAttribute("type", "spell");
-				local name2 = shGetSpell(skillLine, numSpells)
+				local name2 = shGetSpell(skillLine, 2)
+				barBtn2:SetAttribute("type", "spell");				
 				barBtn2:SetAttribute("spell", name2);
 				--barBtn2BG = { bgFile = imgFolder .. shGetButton(skillLine, 2) .. ".BLP", edgeFile = nil, tile = false, tileSize = 18, edgeSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}};
 				--barBtn2:SetBackdrop(barBtn2BG);
-				local texture2 = shGetButton(skillLine, numSpells)
+				local texture2 = shGetButton(skillLine, 2)
 				barBtn2:SetNormalTexture(texture2)
 				barBtn2:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
 				barBtn2:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines(); GameTooltip:AddLine(name2); GameTooltip:Show(); shMouseOverEnter(); end)
@@ -933,6 +936,16 @@ local sName, rank, icon, castTime, minRange, maxRange
 			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._393.Spells.ID)
 			return icon
 		end
+	elseif skillLine == 794 then
+		if spellNum == 2 then
+			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._794.Spells.ID)
+			return icon
+		end
+	elseif skillLine == 185 then
+		if spellNum == 2 then
+			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._185.Spells.ID)
+			return icon
+		end
 	end
 end
 
@@ -981,6 +994,16 @@ function shGetSpell(skillLine, spellNum)
 	elseif skillLine == 393 then
 		if spellNum == 2 then
 			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._393.Spells.ID)
+			return sName
+		end
+	elseif skillLine == 356 then
+		if spellNum == 2 then
+			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._356.Spells.ID)
+			return sName
+		end
+	elseif skillLine == 185 then
+		if spellNum == 2 then
+			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._185.Spells.ID)
 			return sName
 		end
 	end
