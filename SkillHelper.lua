@@ -20,6 +20,7 @@ local shSkillNames = {
 				},
 				["_182"] = {
 					["enName"] = "Herbalism",
+					["skill"] = "Herb Gathering",
 					["Icon"] = "spell_nature_naturetouchgrow",
 					["Spells"] = {
 						["Name"] = "Herbalism Skills",
@@ -643,20 +644,32 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, skillL
 		barBtn1:EnableMouse(true);
 		barBtn1:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
 		barBtn1:SetAttribute("type", "spell");
-		barBtn1:SetAttribute("spell", name);
+		if skillLine == 182 then
+			barBtn1:SetAttribute("spell", "Herb Gathering");
+		elseif skillLine == 186 then
+			local nameMine = shGetSpell(skillLine, 2)
+			barBtn1:SetAttribute("spell", nameMine);
+		else
+			barBtn1:SetAttribute("spell", name);
+		end
 		--barBtn1BG = { bgFile = imgFolder .. shGetButton(skillLine, 1), edgeFile = nil, tile = false, tileSize = 18, edgeSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}};
 		--barBtn1:SetBackdrop(barBtn1BG);
+		if skillLine == 186 then
+			texture = shGetButton(skillLine, 2)
+		end
 		barBtn1:SetNormalTexture(texture)
-		barBtn1:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines(); GameTooltip:AddLine(name); GameTooltip:Show(); shMouseOverEnter(); end)
+		barBtn1:SetScript("OnEnter", function(self)	GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines();	if skillLine == 182 then GameTooltip:AddLine("Herb Gathering"); elseif skillLine == 186 then GameTooltip:AddLine("Mining Skills"); else GameTooltip:AddLine(name); end GameTooltip:Show(); shMouseOverEnter(); end)
 		barBtn1:SetScript("OnLeave", function(self) GameTooltip:Hide(); shMouseOverLeave(); end)
 		bar.btn1 = barBtn1
 
 		-- The second button on the skills action bar if applicable
-		if numSpells == 2 or skillLine == 186 then
+		if numSpells == 2 then
 --			print("Button 2" .. name)
 			-- Alchemy, Blacksmithing, Engineering, Leatherworking, or Tailoring
 			if skillLine == 171 or skillLine == 164 or skillLine == 202 or skillLine == 165 or skillLine == 197 then
 				print("Spell 2 found for " .. name .. ", please report this.")
+			elseif skillLine == 186 then
+				-- Nothing for mining
 			else
 				local barBtn2 = CF("Button", nil, barBtn1, "SecureActionButtonTemplate");
 				barBtn2:SetFrameStrata("BACKGROUND");
