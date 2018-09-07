@@ -1158,12 +1158,12 @@ function shLocker()
 	if shSettings.options.shLock == true then
 		shSettings.options.shLock = false
 		shFrameLockButton:SetChecked(false)
-		shFrame:EnableMouse(shSettings.options.shLock)
+		shFrame:EnableMouse(false)
 		ChatFrame1:AddMessage("Skill Helper |cffff0000locked|r!")
 	elseif shSettings.options.shLock == false then
 		shSettings.options.shLock = true
 		shFrameLockButton:SetChecked(true)
-		shFrame:EnableMouse(shSettings.options.shLock)
+		shFrame:EnableMouse(true)
 		ChatFrame1:AddMessage("Skill Helper |cff00ff00unlocked|r!")
 	end
 end
@@ -1175,7 +1175,6 @@ function shReset()
 end
 
 function shOption()
-	InterfaceOptionsFrame_OpenToCategory("|cff00ff00Skill Helper|r");
 	InterfaceOptionsFrame_OpenToCategory("|cff00ff00Skill Helper|r");
 end
 
