@@ -1,7 +1,7 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 4.0.04
+-- Version: 4.0.05
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS [ID is aka skillLine in GetProfessionInfo]
