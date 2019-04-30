@@ -1,7 +1,7 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 4.0.05
+-- Version: 4.0.1
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS [ID is aka skillLine in GetProfessionInfo]
@@ -116,7 +116,7 @@ local shSkillNames = {
 local SKILLCAP = 0
 local classicCap = 300
 local bcNRCataMopCap = 75
-local wodLegionCap = 100
+local wodLegionCap = 150
 local bfa = 150
 local y = -19
 local imgFolder = "Interface\\ICONS\\"
@@ -129,7 +129,7 @@ local addon_name = "SkillHelper"
 local shFrame
 local shBarFrame
 
--- RegisterForEvent table
+-- RegisterEvent table
 local shEvents_table = {}
 
 shEvents_table.eventFrame = CF("Frame");
@@ -599,16 +599,16 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, skillL
 			-- Skill Bar X Point
 			barx = 42
 			-- Skill Button 1 X Point
-			btnax = -178
+			btnax = -197
 			-- Skill Button 2 X Point
-			btnbx = -36
+			btnbx = 0
 		else
 			-- Skill Bar X Point
 			barx = 6
 			-- Skill Button 1 X Point
-			btnax = -178
+			btnax = -197
 			-- Skill Button 2 X Point
-			btnbx = -36
+			btnbx = 0
 		end
 	end
 
@@ -700,26 +700,23 @@ function shDrawBar(name, texture, rank, rankModifier, maxRank, numSpells, skillL
 	end
 
 	-- if the rank is in trainable range and not skill cap then turn bar red
+	bar:SetPoint("TOPLEFT", shFrame, "TOPLEFT", barx, y-4)
+	bar:SetValue((rank + rankModifier)/maxRank)
+
 	if	rank >= maxRank - 25 and maxRank < SKILLCAP then
-		bar:SetPoint("TOPLEFT", shFrame, "TOPLEFT", barx, y-4)
 		bar:SetStatusBarColor(shSettings.colors.trainr, shSettings.colors.trainb, shSettings.colors.traing, shSettings.colors.full)
 		bar:SetBackdropColor(shSettings.colors.trainr, shSettings.colors.trainb, shSettings.colors.traing, shSettings.colors.half)
-		bar:SetValue((rank + rankModifier)/maxRank)
-
+		
 		bar.text:SetFormattedText("|cFFFF0000%s: |cFFFFFFFF%s+%s/%s", name, rank, rankModifier, maxRank)
 	elseif rank == maxRank then -- set maxed skill level bar royal blue
-		bar:SetPoint("TOPLEFT", shFrame, "TOPLEFT", barx, y-4)
 		bar:SetStatusBarColor(shSettings.colors.maxr, shSettings.colors.maxg, shSettings.colors.maxb, shSettings.colors.full)
 		bar:SetBackdropColor(shSettings.colors.maxr, shSettings.colors.maxg, shSettings.colors.maxb, shSettings.colors.half)
-		bar:SetValue((rank + rankModifier)/maxRank)
-
+		
 		bar.text:SetFormattedText("|cFF00FF00%s: |cFFFFFFFF%s+%s/%s", name, rank, rankModifier, maxRank)
 	else -- otherwise keep bar green
-		bar:SetPoint("TOPLEFT", shFrame, "TOPLEFT", barx, y-4)
 		bar:SetStatusBarColor(shSettings.colors.baser, shSettings.colors.baseg, shSettings.colors.baseb, shSettings.colors.full)
 		bar:SetBackdropColor(shSettings.colors.baser, shSettings.colors.baseg, shSettings.colors.baseb, shSettings.colors.half)
-		bar:SetValue((rank + rankModifier)/maxRank)
-
+		
 		bar.text:SetFormattedText("|cFFFFFF00%s: |cFFFFFFFF%s+%s/%s", name, rank, rankModifier, maxRank)
 	end
 
