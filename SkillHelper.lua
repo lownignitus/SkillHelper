@@ -1,7 +1,7 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 4.0.1
+-- Version: 4.1.05
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS [ID is aka skillLine in GetProfessionInfo]
@@ -117,7 +117,7 @@ local SKILLCAP = 0
 local classicCap = 300
 local bcNRCataMopCap = 75
 local wodLegionCap = 150
-local bfa = 150
+local bfa = 175
 local y = -19
 local imgFolder = "Interface\\ICONS\\"
 local shFrameBG = { bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background.blp", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border.blp", tile = true, tileSize = 32, edgeSize = 16, insets = {left = 3, right = 3, top = 3, bottom = 3}}
@@ -776,7 +776,7 @@ function shCleanUp()
 	local match = false
 	local clnBar
 
-	for k, d in pairs(bars) do -- cycle bar names
+	for k, v in pairs(bars) do -- cycle bar names
 		for i, v in ipairs(skills) do -- cycle skill nams
 			if k == v then -- if the names match set true
 				match = true
