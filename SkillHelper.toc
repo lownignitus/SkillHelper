@@ -1,18 +1,9 @@
-<<<<<<< HEAD
 ## Interface: 80300
 ## Title: |cff00ff00Skill Helper|r
 ## Author: |cffffcc00JerichoHM|r
 ## X-Maintainer: |cffDA70D6LownIgnitus|r Mihkael@US-Alexstrasza
-## Version: |cffFF4500v4.1.7|r
-## X-Date: 03/05/2018
-=======
-## Interface: 80205
-## Title: |cff00ff00Skill Helper|r
-## Author: |cffffcc00JerichoHM|r
-## X-Maintainer: |cffDA70D6LownIgnitus|r Mihkael@US-Alexstrasza
-## Version: |cffFF4500v4.1.6|r
-## X-Date: 24/09/2019
->>>>>>> 90e590fbdd064810a80e41658e8210d136f9a660
+## Version: |cffFF4500v4.1.8|r
+## X-Date: 04/05/2018
 ## X-Website: https://github.com/lownignitus/SkillHelper
 ## X-Contact: https://twitter.com/lownignitus
 ## Notes: Addon to allow quick viewing of Profession Skill Bars, Access to quick use Skill Buttons
