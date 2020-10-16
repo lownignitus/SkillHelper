@@ -1,7 +1,7 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 4.1.8
+-- Version: 4.1.9
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS [ID is aka skillLine in GetProfessionInfo]
@@ -230,7 +230,7 @@ end
 
 function shMainFrame()
 	-- shFrame Core UI
-	shFrame = CF("Frame", "shFrame", UIParent)
+	shFrame = CF("Frame", "shFrame", UIParent, "BackdropTemplate")
 	shFrame:SetPoint("CENTER", UIParent, "CENTER")
 	shFrame:SetFrameStrata("BACKGROUND")
 	shFrame:SetBackdrop(shFrameBG)
@@ -417,7 +417,7 @@ function shOptionsInit()
 	desc:SetPoint("TOPLEFT", contact, "BOTTOMLEFT", 0, -8)
 
 	-- Misc Options Frame
-	local shMiscFrame = CF("Frame", SHMiscFrame, shOptions)
+	local shMiscFrame = CF("Frame", SHMiscFrame, shOptions, "BackdropTemplate")
 	shMiscFrame:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -8)
 	shMiscFrame:SetBackdrop(shOptionsBG)
 	shMiscFrame:SetSize(240, 240)
@@ -503,7 +503,7 @@ function shOptionsInit()
 	reloadBtn.text:SetText("Reload")
 
 	-- Scale Frame
-	local shScaleFrame = CF("Frame", "SHScaleFrame", shOptions)
+	local shScaleFrame = CF("Frame", "SHScaleFrame", shOptions, "BackdropTemplate")
 	shScaleFrame:SetPoint("TOPLEFT", shMiscFrame, "TOPRIGHT", 8, 0)
 	shScaleFrame:SetBackdrop(shOptionsBG)
 	shScaleFrame:SetSize(150, 75)
@@ -539,7 +539,7 @@ function shOptionsInit()
 	end);
 
 	-- Alpha Frame
-	local shAlphaFrame = CF("Frame", "SHAlphaFrame", shOptions)
+	local shAlphaFrame = CF("Frame", "SHAlphaFrame", shOptions, "BackdropTemplate")
 	shAlphaFrame:SetPoint("TOPLEFT", shScaleFrame, "TOPRIGHT", 8, 0)
 	shAlphaFrame:SetBackdrop(shOptionsBG)
 	shAlphaFrame:SetSize(150, 75)
@@ -639,7 +639,7 @@ function shDrawBar(name, iconID, rank, rankModifier, maxRank, numSpells, skillLi
 	local bar = bars[name]
 	if not bar then --if bar doesn't exist
 		-- The Skill bar
-		bar = CF("StatusBar", nil, shBarFrame)
+		bar = CF("StatusBar", nil, shBarFrame, "BackdropTemplate")
 		bar:SetFrameStrata("BACKGROUND")
 		bar:SetPoint("TOPLEFT", shBarFrame, "TOPLEFT", barx, y)
 		bar:SetSize(160,18)
@@ -1225,6 +1225,7 @@ function shReset()
 end
 
 function shOption()
+	InterfaceOptionsFrame_OpenToCategory("|cff00ff00Skill Helper|r");
 	InterfaceOptionsFrame_OpenToCategory("|cff00ff00Skill Helper|r");
 end
 
