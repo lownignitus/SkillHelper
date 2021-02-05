@@ -1,9 +1,10 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: |cff00ff00Skill Helper|r
+## X-Curse-Project-ID: 25571
 ## Author: |cffffcc00JerichoHM|r
 ## X-Maintainer: |cffDA70D6LownIgnitus|r Mihkael@US-Alexstrasza
-## Version: |cffFF4500v4.1.10|r
-## X-Date: 16/10/2020
+## Version: |cffFF4500v4.1.12|r
+## X-Date: 2021/02/05
 ## X-Website: https://github.com/lownignitus/SkillHelper
 ## X-Contact: https://twitter.com/lownignitus
 ## Notes: Addon to allow quick viewing of Profession Skill Bars, Access to quick use Skill Buttons

@@ -1,7 +1,7 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 4.1.10
+-- Version: 4.1.12
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS [ID is aka skillLine in GetProfessionInfo]
@@ -133,11 +133,19 @@ local shSkillNames = {
 				}				
 			}
 
-local SKILLCAP = 0
-local classicCap = 300
-local bcNRCataMopCap = 75
-local wodLegionCap = 150
-local bfa = 175
+local shSkillCaps = {
+	["SKILLCAP"] = 0,
+	["classicCap"] = 300,
+	["bcNRCataMopCap"] = 75,
+	["archCap"] = 950,
+	["wodLegionCap"] = 150,
+	["bfa"] = 175,
+	["slFish"] = 200,
+	["slGather"] = 150,
+	["slAlch"] = 175,
+	["slCraft"] = 100,
+	["slCook"] = 75,
+}
 local y = -19
 local imgFolder = "Interface\\ICONS\\"
 local shFrameBG = { bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background.blp", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border.blp", tile = true, tileSize = 32, edgeSize = 16, insets = {left = 3, right = 3, top = 3, bottom = 3}}
@@ -217,7 +225,6 @@ function shEvents_table.eventFrame:ADDON_LOADED(AddOn)
 	end
 
 	shSettings = shSVCheck(defaults, shSettings)
-	SKILLCAP = bfa
 
 -- Initialize Main Frame
 	shMainFrame()
@@ -605,7 +612,7 @@ local skills = {}
 -- Frames Table
 local bars = {}
 
-function shDrawBar(name, iconID, rank, rankModifier, maxRank, numSpells, skillLine, y)
+function shDrawBar(name, iconID, rank, rankModifier, maxRank, numSpells, skillLine, SKILLCAP, y)
 --	print("Profession: " .. name .. ", skillLine: " .. skillLine .. ", iconID: " .. iconID)
 	if shSettings.options.shRev == false then
 		-- Skill Bar XbPoint
@@ -785,7 +792,20 @@ function shUpdateData()
 		-- Fetch the details for each Profession
 		local name, iconID, rank, maxRank, numSpells, _, skillLine, rankModifier, _, _ = GetProfessionInfo(v)
 --		print(name .. ", " .. iconID .. ", " .. rank .. ", " .. maxRank .. ", " .. numSpells .. ", " .. spelloffset .. ", " .. skillLine .. ", " .. rankModifier .. ", " .. specializationIndex .. ", " .. specializationOffset)
-		shDrawBar(name, iconID, rank, rankModifier, maxRank, numSpells, skillLine, y)
+		if skillLine == 182 or skillLine == 186 or skillLine == 393 then
+			shSkillCaps.SKILLCAP = shSkillCaps.slGather
+		elseif skillLine == 171 then
+			shSkillCaps.SKILLCAP = shSkillCaps.slAlch
+		elseif skillLine == 185 then
+			shSkillCaps.SKILLCAP = shSkillCaps.slCook
+		elseif skillLine == 356 then
+			shSkillCaps.SKILLCAP = shSkillCaps.slFish
+		elseif skillLine  == 794 then
+			shSkillCaps.SKILLCAP = shSkillCaps.archCap
+		else
+			shSkillCaps.SKILLCAP = shSkillCaps.slCraft
+		end
+		shDrawBar(name, iconID, rank, rankModifier, maxRank, numSpells, skillLine, shSkillCaps.SKILLCAP, y)
 		y = y - 18
 
 		tinsert( skills, name)
