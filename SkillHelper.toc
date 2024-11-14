@@ -6,7 +6,6 @@
 ## Version: |cffFF4500v5.0.00|r
 ## X-Date: 2024/11/14
 ## X-Website: https://github.com/lownignitus/SkillHelper
-## X-Contact: https://twitter.com/lownignitus
 ## Notes: Addon to allow quick viewing of Profession Skill Bars, Access to quick use Skill Buttons
 ## Dependancies:
 ## SavedVariables: 

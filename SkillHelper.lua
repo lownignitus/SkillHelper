@@ -163,7 +163,7 @@ local shEvents_table = {}
 
 shEvents_table.eventFrame = CF("Frame");
 shEvents_table.eventFrame:RegisterEvent("ADDON_LOADED");
-shEvents_table.eventFrame:RegisterEvent("SKILL_LINES_CHANGED");
+shEvents_table.eventFrame:RegisterEvent("SKILL_LINES_CHANGED")
 shEvents_table.eventFrame:SetScript("OnEvent", function(self, event, ...)
 	shEvents_table.eventFrame[event](self, ...);
 end);
@@ -268,6 +268,8 @@ function shMainFrame()
 		shFrame.title:SetSize(125, 16)
 		shFrame.title:SetPoint("TOPLEFT", shFrame, "TOPLEFT", 10, -3)		
 		shFrameTitle:SetText(C_AddOns.GetAddOnMetadata(addon_name, "Title") .. " " .. C_AddOns.GetAddOnMetadata(addon_name, "Version"))
+		shFrameTitle:SetScript("OnEnter", function(self) shMouseOverEnter(); end)
+		shFrameTitle:SetScript("OnLeave", function(self) shMouseOverLeave(); end)
 
 		-- Buttons (Options|Profs|Links|Lock|Close)
 		-- Close Button
@@ -419,10 +421,8 @@ function shOptionsInit()
 	maintainer:SetPoint("TOPLEFT", author, "BOTTOMLEFT", 0, -8)
 	local website = createfont("GameFontNormal", "Website: " .. C_AddOns.GetAddOnMetadata(addon_name, "X-Website"))
 	website:SetPoint("TOPLEFT", maintainer, "BOTTOMLEFT", 0, -8)
-	local contact = createfont("GameFontNormal", "Contact: " .. C_AddOns.GetAddOnMetadata(addon_name, "X-Contact"))
-	contact:SetPoint("TOPLEFT", website, "BOTTOMLEFT", 0, -8)
 	local desc = createfont("GameFontHighlight", C_AddOns.GetAddOnMetadata(addon_name, "Notes"))
-	desc:SetPoint("TOPLEFT", contact, "BOTTOMLEFT", 0, -8)
+	desc:SetPoint("TOPLEFT", website, "BOTTOMLEFT", 0, -8)
 
 	-- Misc Options Frame
 	local shMiscFrame = CF("Frame", SHMiscFrame, shOptions, "BackdropTemplate")
@@ -664,6 +664,8 @@ function shDrawBar(name, iconID, rank, rankModifier, maxRank, numSpells, skillLi
 		bar:SetStatusBarColor(shSettings.colors.baser, shSettings.colors.baseg, shSettings.colors.baseb, shSettings.colors.full)
 		bar:SetMinMaxValues(0,1)
 		bar:SetValue((rank + rankModifier)/maxRank)
+		bar:SetScript("OnEnter", function(self) shMouseOverEnter(); end)
+		bar:SetScript("OnLeave", function(self) shMouseOverLeave(); end)
 
 		-- The text on the Skill Bar
 		local barTxt = bar:CreateFontString(nil, "ARTWORK");
@@ -707,9 +709,11 @@ function shDrawBar(name, iconID, rank, rankModifier, maxRank, numSpells, skillLi
 		-- The second button on the skills action bar if applicable
 		if numSpells == 2 then
 --			print("Button 2" .. name)
-			-- Alchemy, Blacksmithing, Engineering, Leatherworking, or Tailoring
-			if skillLine == 171 or skillLine == 164 or skillLine == 202 or skillLine == 165 or skillLine == 197 then
+			-- Alchemy, Blacksmithing, Leatherworking, or Tailoring
+			if skillLine == 171 or skillLine == 164 or skillLine == 165 or skillLine == 197 then
 				print("Spell 2 found for " .. name .. ", please report this.")
+			elseif skillLine == 202 then
+				--Engineering Do nothing
 			else
 				local barBtn2 = CF("Button", barBtn2, barBtn1, "SecureActionButtonTemplate");
 				barBtn2:SetPoint("TOPLEFT", barBtn1, "TOPRIGHT", btnbx, 0);
@@ -736,7 +740,7 @@ function shDrawBar(name, iconID, rank, rankModifier, maxRank, numSpells, skillLi
 		if skillLine == 356 then
 			bars[name2] = bar
 		else
-			bars[name] = barS
+			bars[name] = bar
 		end
 	else --if bar exists
 		bar:ClearAllPoints()
@@ -928,6 +932,8 @@ function shInitialize()
 	else
 		shLayoutOpt:SetChecked(false)
 	end
+
+	shUpdateData()
 end
 
 function shMouseOverEnter()
