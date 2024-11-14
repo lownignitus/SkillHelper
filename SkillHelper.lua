@@ -1,7 +1,7 @@
 -- Title: Skill Helper
 -- Author: JerichoHM
 -- Maintainer: LownIgnitus
--- Version: 4.1.13
+-- Version: 5.0.00
 -- Desc: A simple addon for tracking and using skills
 
 -- GLOBALS [ID is aka skillLine in GetProfessionInfo]
@@ -27,7 +27,7 @@ local shSkillNames = {
 					["Icon"] = "spell_nature_naturetouchgrow",
 					["IconID"] = 136065,
 					["Spells"] = {
-						["Name"] = "Herbalism Skills",
+						["Name"] = "Herbalism Journal",
 						["ID"] = 193290,
 						["Icon"] = "inv_misc_bag_18",
 						["IconID"] = 133651,
@@ -49,7 +49,7 @@ local shSkillNames = {
 					["Icon"] = "trade_mining",
 					["IconID"] = 136248,
 					["Spells"] = {
-						["Name"] = "Mining Skills",
+						["Name"] = "Mining Journal",
 						["ID"] = 2656,
 						["Icon"] = "spell_fire_flameblades",
 						["IconID"] = 135811,
@@ -81,7 +81,7 @@ local shSkillNames = {
 					["Icon"] = "trade_fishing",
 					["IconID"] = 136245,
 					["Spells"] = {
-						["Name"] = "Fishing Skills",
+						["Name"] = "Fishing Journal",
 						["ID"] = 271990,
 						["Icon"] = "achievement_profession_fishing_northrendangler",
 						["IconID"] = 236574,
@@ -92,7 +92,7 @@ local shSkillNames = {
 					["Icon"] = "inv_misc_pelt_wolf_01",
 					["IconID"] = 134366,
 					["Spells"] = {
-						["Name"] = "Skinning Skills",
+						["Name"] = "Skinning Journal",
 						["ID"] = 194174,
 						["Icon"] = "inv_misc_skinningknife",
 						["IconID"] = 463557,
@@ -137,7 +137,7 @@ local shSkillCaps = {
 	["SKILLCAP"] = 0,
 	["classicCap"] = 300,
 	["bcNRCataMopCap"] = 75,
-	["archCap"] = 950,
+	["archCap"] = 150,
 	["wodLegionCap"] = 150,
 	["bfa"] = 175,
 	["slFish"] = 200,
@@ -145,6 +145,7 @@ local shSkillCaps = {
 	["slAlch"] = 175,
 	["slCraft"] = 100,
 	["slCook"] = 75,
+	["twwCap"] = 100,
 }
 local y = -19
 local imgFolder = "Interface\\ICONS\\"
@@ -152,7 +153,7 @@ local shFrameBG = { bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background.bl
 local shBarBG = { bgFile = "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar", edgeFile = nil, tile = false, tileSize = 32, edgeSize = 0, insets = {left = 0, right = 0, top = 0, bottom = 0}}
 SLASH_SKILLHELPER1, SLASH_SKILLHELPER2, SLASH_SKILLHELPER3, SLASH_SKILLHELPER4 = '/SHelper', '/shelper', '/Skillhelper', '/skillhelper'
 local icon
-CF = CreateFrame
+local CF = CreateFrame
 local addon_name = "SkillHelper"
 local shFrame
 local shBarFrame
@@ -266,7 +267,7 @@ function shMainFrame()
 		shFrame.title:SetFont("Fonts\\FRIZQT__.TTF", 12)
 		shFrame.title:SetSize(125, 16)
 		shFrame.title:SetPoint("TOPLEFT", shFrame, "TOPLEFT", 10, -3)		
-		shFrameTitle:SetText(GetAddOnMetadata(addon_name, "Title") .. " " .. GetAddOnMetadata(addon_name, "Version"))
+		shFrameTitle:SetText(C_AddOns.GetAddOnMetadata(addon_name, "Title") .. " " .. C_AddOns.GetAddOnMetadata(addon_name, "Version"))
 
 		-- Buttons (Options|Profs|Links|Lock|Close)
 		-- Close Button
@@ -312,7 +313,7 @@ function shMainFrame()
 		shFrameProfsButton:SetSize(18, 19)
 		shFrameProfsButton:SetPoint("TOPRIGHT", shFrame, "TOPRIGHT", -26, 1) -- -42, 1
 
-		shFrameProfsButton:SetScript("OnClick", function(self) ToggleSpellBook("professions"); end)
+		shFrameProfsButton:SetScript("OnClick", function(self) ToggleProfessionsBook(); end)
 		shFrameProfsButton:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
 												GameTooltip:ClearLines();
 												GameTooltip:AddLine("Professions Pane");
@@ -368,8 +369,8 @@ end
 
 -- Skill Helper Options
 function shOptionsInit()
-	local shOptions = CF("Frame", nil, InterfaceOptionsFramePanelContainer);
-	local panelWidth = InterfaceOptionsFramePanelContainer:GetWidth() -- ~623
+	local shOptions = CF("Frame", nil, SettingsPanel.Container);
+	local panelWidth = SettingsPanel.Container:GetWidth() -- ~623
 	local wideWidth = panelWidth - 40
 	shOptions:SetWidth(wideWidth)
 	shOptions:Hide();
@@ -406,21 +407,21 @@ function shOptionsInit()
 	end
 	
 	--GameFontNormalHuge GameFontNormalLarge 
-	local title = createfont("SystemFont_OutlineThick_WTF", GetAddOnMetadata(addon_name, "Title"))
+	local title = createfont("SystemFont_OutlineThick_WTF", C_AddOns.GetAddOnMetadata(addon_name, "Title"))
 	title:SetPoint("TOPLEFT", 16, -16)
-	local ver = createfont("SystemFont_Huge1", GetAddOnMetadata(addon_name, "Version"))
+	local ver = createfont("SystemFont_Huge1", C_AddOns.GetAddOnMetadata(addon_name, "Version"))
 	ver:SetPoint("BOTTOMLEFT", title, "BOTTOMRIGHT", 4, 0)
-	local date = createfont("GameFontNormalLarge", "Version Date: " .. GetAddOnMetadata(addon_name, "X-Date"))
+	local date = createfont("GameFontNormalLarge", "Version Date: " .. C_AddOns.GetAddOnMetadata(addon_name, "X-Date"))
 	date:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
-	local author = createfont("GameFontNormal", "Author: " .. GetAddOnMetadata(addon_name, "Author"))
+	local author = createfont("GameFontNormal", "Author: " .. C_AddOns.GetAddOnMetadata(addon_name, "Author"))
 	author:SetPoint("TOPLEFT", date, "BOTTOMLEFT", 0, -8)
-	local maintainer = createfont("GameFontNormal", "Maintainer: " .. GetAddOnMetadata(addon_name, "X-Maintainer"))
+	local maintainer = createfont("GameFontNormal", "Maintainer: " .. C_AddOns.GetAddOnMetadata(addon_name, "X-Maintainer"))
 	maintainer:SetPoint("TOPLEFT", author, "BOTTOMLEFT", 0, -8)
-	local website = createfont("GameFontNormal", "Website: " .. GetAddOnMetadata(addon_name, "X-Website"))
+	local website = createfont("GameFontNormal", "Website: " .. C_AddOns.GetAddOnMetadata(addon_name, "X-Website"))
 	website:SetPoint("TOPLEFT", maintainer, "BOTTOMLEFT", 0, -8)
-	local contact = createfont("GameFontNormal", "Contact: " .. GetAddOnMetadata(addon_name, "X-Contact"))
+	local contact = createfont("GameFontNormal", "Contact: " .. C_AddOns.GetAddOnMetadata(addon_name, "X-Contact"))
 	contact:SetPoint("TOPLEFT", website, "BOTTOMLEFT", 0, -8)
-	local desc = createfont("GameFontHighlight", GetAddOnMetadata(addon_name, "Notes"))
+	local desc = createfont("GameFontHighlight", C_AddOns.GetAddOnMetadata(addon_name, "Notes"))
 	desc:SetPoint("TOPLEFT", contact, "BOTTOMLEFT", 0, -8)
 
 	-- Misc Options Frame
@@ -496,7 +497,7 @@ function shOptionsInit()
 	revDesc:SetPoint("TOPLEFT", shRevOpt, "BOTTOMLEFT", 35, 0)
 
 	-- Reload button for Reverse
-	local reloadBtn = CF("Button", "Reload", shMiscFrame, "OptionsButtonTemplate")
+	local reloadBtn = CF("Button", "Reload", shMiscFrame, "UIPanelButtonTemplate")
 	reloadBtn:SetSize(54, 18)
 	reloadBtn:SetPoint("TOPLEFT", revDesc, "TOPRIGHT", 10, 4)
 
@@ -602,7 +603,12 @@ function shOptionsInit()
 	end
 
 	-- add the Options panel to the Blizzard list
-	InterfaceOptions_AddCategory(shOptions);
+	if InterfaceOptions_AddCategory then
+		InterfaceOptions_AddCategory(shOptions)
+	else
+		local category, layout = _G.Settings.RegisterCanvasLayoutCategory(shOptions, shOptions.name)
+		_G.Settings.RegisterAddOnCategory(category)
+	end
 	-- End Skill Helper Options
 end
 
@@ -613,6 +619,8 @@ local skills = {}
 local bars = {}
 
 function shDrawBar(name, iconID, rank, rankModifier, maxRank, numSpells, skillLine, SKILLCAP, y)
+	local name2, iconID2
+	--name, iconLink, rank, rankModifier, maxRank, numSpells, skillLine, twwCap, y
 --	print("Profession: " .. name .. ", skillLine: " .. skillLine .. ", iconID: " .. iconID)
 	if shSettings.options.shRev == false then
 		-- Skill Bar XbPoint
@@ -663,33 +671,37 @@ function shDrawBar(name, iconID, rank, rankModifier, maxRank, numSpells, skillLi
 		barTxt:SetPoint("CENTER", bar, "CENTER", 0, 1);
 		bar.text = barTxt
 
+		-- Text formatting for the text on the Skill Bar
+		bar.text:SetFormattedText("|cFFFFFF00%s: |cFFFFFFFF%s+%s/%s", name, rank, rankModifier, maxRank)
+
 		-- The first button on the skills action bar
-		local barBtn1 = CF("Button", nil, bar, "SecureActionButtonTemplate");
-		barBtn1:SetFrameStrata("BACKGROUND");
+		local barBtn1 = CF("Button", barBtn1, bar, "SecureActionButtonTemplate");
 		barBtn1:SetPoint("TOPLEFT", bar, "TOPRIGHT", btnax, 0);
 		barBtn1:SetSize(18,18);
-		barBtn1:EnableMouse(true);
+		barBtn1:SetMouseClickEnabled(true);
 		barBtn1:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
-		if skillLine == 182 or skillLine == 186 or skillLine == 393 then -- Herbalism, Mining, or Skinning
-			local name = shGetSpell(skillLine, 2)
-			barBtn1:SetAttribute("type", "spell");
-			barBtn1:SetAttribute("spell", name);
-		elseif skillLine == 171 or skillLine == 164 or skillLine == 333 or skillLine == 202 or skillLine == 773 or skillLine == 755 or skillLine == 165 or skillLine == 197 then -- Alchemy, Blacksmithing, Enchanting, Engineering, Inscription, Jewelcrafting, Leatherworking, Tailoring
-			barBtn1:SetAttribute("type", "macro");
-			local macroText = "/run C_TradeSkillUI.OpenTradeSkill(" .. skillLine .. ")"
-			barBtn1:SetAttribute("macrotext", macroText)
-		else
-			barBtn1:SetAttribute("type", "spell");
-			barBtn1:SetAttribute("spell", name);
-		end
-		--barBtn1BG = { bgFile = imgFolder .. shGetButton(skillLine, 1), edgeFile = nil, tile = false, tileSize = 18, edgeSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}};
-		--barBtn1:SetBackdrop(barBtn1BG);
-		if skillLine == 182 or skillLine == 186 then -- Herbalism or Mining
-			iconID = shGetButton(skillLine, 2)
+		if skillLine == 356 or skillLine == 186 or skillLine == 393 or skillLine == 182 then
+			if numSpells == 2 then
+				--Is Fishing or Mining or Skinning or Herbalism swap spell 1 and 2
+				name2 = name
+				iconID2 = iconID			
+				name, iconID = shGetButton(skillLine, numSpells)
+			else
+				--nothing
+			end
 		end
 		barBtn1:SetNormalTexture(iconID)
-		barBtn1:SetScript("OnEnter", function(self)	GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines();	if skillLine == 182 then GameTooltip:AddLine("Herb Gathering"); elseif skillLine == 186 then GameTooltip:AddLine("Mining Skills"); else GameTooltip:AddLine(name); end GameTooltip:Show(); shMouseOverEnter(); end)
+		barBtn1:SetScript("OnEnter", function(self)	GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines();	 GameTooltip:AddLine(name); GameTooltip:Show(); shMouseOverEnter(); end)
 		barBtn1:SetScript("OnLeave", function(self) GameTooltip:Hide(); shMouseOverLeave(); end)
+		local state
+		barBtn1:SetScript("OnClick", function(self)  
+			if state == "close" or state == nil then 
+				state = C_TradeSkillUI.OpenTradeSkill(skillLine)
+			else
+				state = "close"
+				C_TradeSkillUI.CloseTradeSkill()
+			end
+		end);
 		bar.btn1 = barBtn1
 
 		-- The second button on the skills action bar if applicable
@@ -698,33 +710,34 @@ function shDrawBar(name, iconID, rank, rankModifier, maxRank, numSpells, skillLi
 			-- Alchemy, Blacksmithing, Engineering, Leatherworking, or Tailoring
 			if skillLine == 171 or skillLine == 164 or skillLine == 202 or skillLine == 165 or skillLine == 197 then
 				print("Spell 2 found for " .. name .. ", please report this.")
-			elseif skillLine == 182 or skillLine == 186 or skillLine == 393 then
-				-- Nothing for Herbalism, Mining, or Skinning
 			else
-				local barBtn2 = CF("Button", nil, barBtn1, "SecureActionButtonTemplate");
-				barBtn2:SetFrameStrata("BACKGROUND");
+				local barBtn2 = CF("Button", barBtn2, barBtn1, "SecureActionButtonTemplate");
 				barBtn2:SetPoint("TOPLEFT", barBtn1, "TOPRIGHT", btnbx, 0);
 				barBtn2:SetSize(18,18);
-				barBtn2:EnableMouse(true);
-				local name2 = shGetSpell(skillLine, 2)
-				barBtn2:SetAttribute("type", "spell");				
-				barBtn2:SetAttribute("spell", name2);
-				--barBtn2BG = { bgFile = imgFolder .. shGetButton(skillLine, 2) .. ".BLP", edgeFile = nil, tile = false, tileSize = 18, edgeSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}};
-				--barBtn2:SetBackdrop(barBtn2BG);
-				local iconID2 = shGetButton(skillLine, 2)
+				barBtn2:SetMouseClickEnabled(true);
+				barBtn2:RegisterForClicks("AnyUp", "AnyDown");
+				if skillLine == 356 or skillLine == 186 or skillLine == 393 or skillLine == 182 then
+					--is Fishing nothing
+				else
+					name2, iconID2 = shGetButton(skillLine, numSpells)
+				end
+--				print("name2 " ..name2.. ", iconID2 " ..iconID2)
 				barBtn2:SetNormalTexture(iconID2)
 				barBtn2:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
 				barBtn2:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_TOP"); GameTooltip:ClearLines(); GameTooltip:AddLine(name2); GameTooltip:Show(); shMouseOverEnter(); end)
 				barBtn2:SetScript("OnLeave", function(self) GameTooltip:Hide(); shMouseOverLeave(); end)
+				barBtn2:SetAttribute("type1", "spell");
+				barBtn2:SetAttribute("spell", name2);
 				bar.btn2 = barBtn2
 			end
 		end
 
-		-- Text formatting for the text on the Skill Bar
-		bar.text:SetFormattedText("|cFFFFFF00%s: |cFFFFFFFF%s+%s/%s", name, rank, rankModifier, maxRank)
-
 		-- Add to the array
-		bars[name] = bar
+		if skillLine == 356 then
+			bars[name2] = bar
+		else
+			bars[name] = barS
+		end
 	else --if bar exists
 		bar:ClearAllPoints()
 	end
@@ -787,25 +800,18 @@ function shUpdateData()
 	end
 
 --	table.foreach(profs, print)
-			
+	local skillCap
 	for k, v in pairs(profs) do
-		-- Fetch the details for each Profession
-		local name, iconID, rank, maxRank, numSpells, _, skillLine, rankModifier, _, _ = GetProfessionInfo(v)
---		print(name .. ", " .. iconID .. ", " .. rank .. ", " .. maxRank .. ", " .. numSpells .. ", " .. spelloffset .. ", " .. skillLine .. ", " .. rankModifier .. ", " .. specializationIndex .. ", " .. specializationOffset)
-		if skillLine == 182 or skillLine == 186 or skillLine == 393 then
-			shSkillCaps.SKILLCAP = shSkillCaps.slGather
-		elseif skillLine == 171 then
-			shSkillCaps.SKILLCAP = shSkillCaps.slAlch
-		elseif skillLine == 185 then
-			shSkillCaps.SKILLCAP = shSkillCaps.slCook
-		elseif skillLine == 356 then
-			shSkillCaps.SKILLCAP = shSkillCaps.slFish
-		elseif skillLine  == 794 then
-			shSkillCaps.SKILLCAP = shSkillCaps.archCap
+		if skillLine == 794 then
+			skillCap = shSkillCaps.archCap
 		else
-			shSkillCaps.SKILLCAP = shSkillCaps.slCraft
+			skillCap = shSkillCaps.twwCap
 		end
-		shDrawBar(name, iconID, rank, rankModifier, maxRank, numSpells, skillLine, shSkillCaps.SKILLCAP, y)
+		-- Fetch the details for each Profession
+		-- name, icon, skillLevel, maxSkillLevel, numAbilities, spelloffset, skillLine, skillModifier, specializationIndex, specializationOffset
+		local name, iconLink, rank, maxRank, numSpells, spelloffset, skillLine, rankModifier, specializationIndex, specializationOffset = GetProfessionInfo(v)
+--		print(name .. ", " .. iconLink .. ", " .. rank .. ", " .. maxRank .. ", " .. numSpells .. ", " .. spelloffset .. ", " .. skillLine .. ", " .. rankModifier .. ", " .. specializationIndex .. ", " .. specializationOffset)
+		shDrawBar(name, iconLink, rank, rankModifier, maxRank, numSpells, skillLine, skillCap, y)
 		y = y - 18
 
 		tinsert( skills, name)
@@ -937,151 +943,90 @@ function shMouseOverLeave()
 end
 
 function shGetButton(skillLine, spellNum)
-	local icon
+	local iconName, iconID
 	if skillLine == 794 then -- Archaeology
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._794.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._794.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._794.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 171 then -- Alchemy
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._171.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._171.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._171.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 164 then -- Blacksmithing
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._164.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._164.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._164.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 185 then -- Cooking
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._185.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._185.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._185.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 333 then -- Enchanting
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._333.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._333.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._333.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 202 then -- Engineering
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._202.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._202.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._202.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 356 then -- Fishing
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._356.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._356.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._356.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 182 then -- Herbalism
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._182.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._182.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._182.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 773 then -- Inscription
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._773.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._773.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._773.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 755 then -- Jewelcrafting
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._755.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._755.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._755.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 165 then -- Leatherworking
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._165.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._165.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._165.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 186 then -- Mining
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._186.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._186.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._186.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 393 then -- Skinning
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._393.Spells.ID)
-			return icon
+			iconName = C_Spell.GetSpellName(shSkillNames._393.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._393.Spells.ID)
+			return iconName, iconID
 		end
 	elseif skillLine == 197 then -- Tailoring
 		if spellNum == 2 then
-			_,_,icon,_,_,_ = GetSpellInfo(shSkillNames._197.Spells.ID)
-			return icon
-		end
-	end
-end
-
-function shGetSpell(skillLine, spellNum)
-	local sName --, rank, icon, castTime, minRange, maxRange
-	if skillLine == 794 then -- Archaeology
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._794.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 171 then -- Alchemy
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._171.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 164 then -- Blacksmithing
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._164.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 185 then -- Cooking
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._185.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 333 then -- Enchanting
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._333.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 202 then -- Engineering
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._202.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 356 then -- Fishing
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._356.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 182 then -- Herbalism
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._182.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 773 then -- Inscription
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._773.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 755 then -- Jewelcrafting
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._755.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 165 then -- Leatherworking
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._165.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 186 then -- Mining
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._186.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 393 then -- Skinning
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._393.Spells.ID)
-			return sName
-		end
-	elseif skillLine == 197 then -- Tailoring
-		if spellNum == 2 then
-			sName,_,_,_,_,_ = GetSpellInfo(shSkillNames._197.Spells.ID)
-			return sName
+			iconName = C_Spell.GetSpellName(shSkillNames._197.Spells.ID)
+			iconID, _ = C_Spell.GetSpellTexture(shSkillNames._197.Spells.ID)
+			return iconName, iconID
 		end
 	end
 end
@@ -1245,13 +1190,17 @@ function shReset()
 end
 
 function shOption()
-	InterfaceOptionsFrame_OpenToCategory("|cff00ff00Skill Helper|r");
-	InterfaceOptionsFrame_OpenToCategory("|cff00ff00Skill Helper|r");
+	if Settings then
+		Settings.OpenToCategory("|cff00ff00Skill Helper|r")
+	elseif InterfaceOptionsFrame_OpenToCategory then		
+		InterfaceOptionsFrame_OpenToCategory("|cff00ff00Skill Helper|r");
+		InterfaceOptionsFrame_OpenToCategory("|cff00ff00Skill Helper|r");
+	end
 end
 
 function shInfo()
-	ChatFrame1:AddMessage(GetAddOnMetadata("SkillHelper", "Title") .. " " .. GetAddOnMetadata("SkillHelper", "Version"))
-	ChatFrame1:AddMessage("Author: " .. GetAddOnMetadata("SkillHelper", "Author") .. " / Maintainer: " .. GetAddOnMetadata("SkillHelper", "X-Maintainer"))
+	ChatFrame1:AddMessage(C_AddOns.GetAddOnMetadata("SkillHelper", "Title") .. " " .. C_AddOns.GetAddOnMetadata("SkillHelper", "Version"))
+	ChatFrame1:AddMessage("Author: " .. C_AddOns.GetAddOnMetadata("SkillHelper", "Author") .. " / Maintainer: " .. C_AddOns.GetAddOnMetadata("SkillHelper", "X-Maintainer"))
 end
 
 function shMMToggle()
@@ -1292,10 +1241,10 @@ function shMiniMap()
 			end
 		end,
 		OnTooltipShow = function(tt)
-			tt:AddLine(GetAddOnMetadata("SkillHelper", "Title") .. " " .. GetAddOnMetadata("SkillHelper", "Version"))
+			tt:AddLine(C_AddOns.GetAddOnMetadata("SkillHelper", "Title") .. " " .. C_AddOns.GetAddOnMetadata("SkillHelper", "Version"))
 			tt:AddDoubleLine("-------------------------", " ")
-			tt:AddLine("Author: " .. GetAddOnMetadata("SkillHelper", "Author"))
-			tt:AddLine("Maintainer: " .. GetAddOnMetadata("SkillHelper", "X-Maintainer"))
+			tt:AddLine("Author: " .. C_AddOns.GetAddOnMetadata("SkillHelper", "Author"))
+			tt:AddLine("Maintainer: " .. C_AddOns.GetAddOnMetadata("SkillHelper", "X-Maintainer"))
 			tt:AddLine("|r  Left-Click to toggle window")
 			tt:AddLine("|r  Shift+Left-Click to change Layout")
 			tt:AddLine("|r  Right-Click to toggle lock")
