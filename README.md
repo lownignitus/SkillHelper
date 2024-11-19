@@ -1,4 +1,5 @@
 [![Downloads](https://cf.way2muchnoise.eu/25571.svg)](https://www.curseforge.com/wow/addons/skill-helper)
+[![Wago SkillHelper](https://img.shields.io/badge/Wago-Skill_Helper-JZKbgqG1.svg?style=flat)](https://addons.wago.io/addons/skillhelper)
 
 SKILL HELPER
 
