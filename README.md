@@ -1,5 +1,6 @@
 [![Downloads](https://cf.way2muchnoise.eu/25571.svg)](https://www.curseforge.com/wow/addons/skill-helper)
 [![Wago SkillHelper](https://img.shields.io/badge/Wago-Skill_Helper-JZKbgqG1.svg?style=flat)](https://addons.wago.io/addons/skillhelper)
+[![PayPal donate button](https://img.shields.io/badge/paypal-donate-blue.svg)](https://www.paypal.com/donate/?hosted_button_id=W9R7UDQ8PGWNY&item_name=Skill%20Helper)
 
 SKILL HELPER
 
